@@ -1,5 +1,5 @@
 #pragma once
-#include "../Library/gameObject.h"
+#include "../../Library/gameObject.h"
 
 static const int EFFECT_MAX = 100;
 

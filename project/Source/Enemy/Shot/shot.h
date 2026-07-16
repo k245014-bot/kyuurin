@@ -1,5 +1,5 @@
 #pragma once
-#include "../Library/gameObject.h"
+#include "../../../Library/gameObject.h"
 
 static const int DELETE_COUNTER = 180;
 static const float POSITION_Y = 30;

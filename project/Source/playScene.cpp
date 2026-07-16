@@ -1,13 +1,12 @@
 #include "playScene.h"
 #include "../Library/sceneManager.h"
 #include <assert.h>
-#include "player.h"
-#include "enemy.h"
-#include "camera.h"
-#include "light.h"
-#include "floor.h"
-#include "Shot.h"
-#include "ShotManager.h"
+#include "Player/player.h"
+#include "Enemy/enemy.h"
+#include "Camera/camera.h"
+#include "Light/light.h"
+#include "Floor/floor.h"
+#include "Enemy/Shot/shotManager.h"
 
 PlayScene::PlayScene()
 {
@@ -18,8 +17,6 @@ PlayScene::PlayScene()
 	player = CreateGameObject<Player>();
 	//shot = CreateGameObject<Shot>();
 	shotManager = CreateGameObject<ShotManager>();
-
-	//CreateGameObject<Floor>();
 
 	enemy->PlayerData(player);
 	hReady = LoadGraph("data\\texture\\readygo.png");

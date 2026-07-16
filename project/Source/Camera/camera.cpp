@@ -1,6 +1,6 @@
 #include "camera.h"
-#include "playScene.h"
-#include "player.h"
+#include "../playScene.h"
+#include "../Player/player.h"
 
 Camera::Camera(SceneBase * _scene) : GameObject(_scene)
 {

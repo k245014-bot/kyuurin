@@ -1,7 +1,7 @@
 #include "shotManager.h"
 #include "shot.h"
-#include "isHit.h"
-#include "player.h"
+#include "../../isHit.h"
+#include "../../Player/player.h"
 
 ShotManager::ShotManager(SceneBase* _scene) :GameObject(_scene)
 {

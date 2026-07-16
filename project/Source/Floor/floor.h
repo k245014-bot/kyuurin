@@ -1,7 +1,8 @@
 #pragma once
-#include "../Library/gameObject.h"
+#include "../../Library/gameObject.h"
 
-class Floor : public GameObject {
+class Floor : public GameObject 
+{
 public:
 	Floor(SceneBase* _scene);
 	~Floor();

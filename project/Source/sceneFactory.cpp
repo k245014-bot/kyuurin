@@ -1,8 +1,8 @@
 #include "sceneFactory.h"
 #include <windows.h>
 #include <assert.h>
-#include "bootScene.h"
-#include "titleScene.h"
+#include "BootScene/bootScene.h"
+#include "Title/titleScene.h"
 #include "playScene.h"
 
 SceneBase* SceneFactory::CreateFirst()

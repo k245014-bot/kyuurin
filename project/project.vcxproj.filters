@@ -11,51 +11,51 @@
     <ClCompile Include="Library\main.cpp">
       <Filter>Library</Filter>
     </ClCompile>
-    <ClCompile Include="Source\bootScene.cpp">
-      <Filter>BootScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\titleScene.cpp">
-      <Filter>TitleScene</Filter>
-    </ClCompile>
     <ClCompile Include="Source\playScene.cpp">
       <Filter>PlayScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\debugScreen.cpp">
-      <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="Library\sceneBase.cpp">
       <Filter>Library</Filter>
     </ClCompile>
-    <ClCompile Include="Source\floor.cpp">
-      <Filter>PlayScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\light.cpp">
-      <Filter>PlayScene</Filter>
-    </ClCompile>
     <ClCompile Include="Source\character.cpp" />
-    <ClCompile Include="Source\camera.cpp">
-      <Filter>PlayScene</Filter>
-    </ClCompile>
     <ClCompile Include="Source\IsHit.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
-    <ClCompile Include="Source\player.cpp">
+    <ClCompile Include="Source\BootScene\bootScene.cpp">
+      <Filter>BootScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Common\debugScreen.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Common\Effect\effect.cpp">
+      <Filter>common\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Common\Effect\effectManager.cpp">
+      <Filter>common\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Enemy\enemy.cpp">
+      <Filter>PlayScene\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Enemy\Shot\shot.cpp">
+      <Filter>PlayScene\enemy\Shot</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Enemy\Shot\shotManager.cpp">
+      <Filter>PlayScene\enemy\Shot</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player\player.cpp">
       <Filter>PlayScene\player</Filter>
     </ClCompile>
-    <ClCompile Include="Source\shot.cpp">
-      <Filter>PlayScene\enemy</Filter>
+    <ClCompile Include="Source\Camera\camera.cpp">
+      <Filter>PlayScene\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Source\shotManager.cpp">
-      <Filter>PlayScene\enemy</Filter>
+    <ClCompile Include="Source\Floor\floor.cpp">
+      <Filter>PlayScene\Floor</Filter>
     </ClCompile>
-    <ClCompile Include="Source\enemy.cpp">
-      <Filter>PlayScene\enemy</Filter>
+    <ClCompile Include="Source\Light\light.cpp">
+      <Filter>PlayScene\Light</Filter>
     </ClCompile>
-    <ClCompile Include="Source\effectManager.cpp">
-      <Filter>PlayScene\effect</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\effect.cpp">
-      <Filter>PlayScene\effect</Filter>
+    <ClCompile Include="Source\Title\titleScene.cpp">
+      <Filter>TitleScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,52 +73,52 @@
     <ClInclude Include="Library\gameObject.h">
       <Filter>Library</Filter>
     </ClInclude>
-    <ClInclude Include="Source\bootScene.h">
-      <Filter>BootScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\titleScene.h">
-      <Filter>TitleScene</Filter>
-    </ClInclude>
     <ClInclude Include="Source\playScene.h">
       <Filter>PlayScene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\debugScreen.h">
-      <Filter>common</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\floor.h">
-      <Filter>PlayScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\light.h">
-      <Filter>PlayScene</Filter>
-    </ClInclude>
     <ClInclude Include="Source\character.h" />
-    <ClInclude Include="Source\camera.h">
-      <Filter>PlayScene</Filter>
-    </ClInclude>
     <ClInclude Include="Source\isHit.h">
       <Filter>PlayScene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\player.h">
-      <Filter>PlayScene\player</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\shot.h">
-      <Filter>PlayScene\enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\shotManager.h">
-      <Filter>PlayScene\enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\enemy.h">
-      <Filter>PlayScene\enemy</Filter>
-    </ClInclude>
     <ClInclude Include="Source\objData.h" />
-    <ClInclude Include="Source\effectManager.h">
-      <Filter>PlayScene\effect</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\effect.h">
-      <Filter>PlayScene\effect</Filter>
-    </ClInclude>
     <ClInclude Include="Library\myDxLib.h">
       <Filter>Library</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\BootScene\bootScene.h">
+      <Filter>BootScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common\debugScreen.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common\Effect\effect.h">
+      <Filter>common\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common\Effect\effectManager.h">
+      <Filter>common\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enemy\enemy.h">
+      <Filter>PlayScene\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enemy\Shot\shot.h">
+      <Filter>PlayScene\enemy\Shot</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enemy\Shot\shotManager.h">
+      <Filter>PlayScene\enemy\Shot</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player\player.h">
+      <Filter>PlayScene\player</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Camera\camera.h">
+      <Filter>PlayScene\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Floor\floor.h">
+      <Filter>PlayScene\Floor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Light\light.h">
+      <Filter>PlayScene\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Title\titleScene.h">
+      <Filter>TitleScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -143,8 +143,20 @@
     <Filter Include="PlayScene\enemy">
       <UniqueIdentifier>{f7887ae6-208b-4c05-82e4-cf1bf5d6b7a0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PlayScene\effect">
-      <UniqueIdentifier>{f776360b-5511-47b3-bcd6-f79229e00d54}</UniqueIdentifier>
+    <Filter Include="common\Effect">
+      <UniqueIdentifier>{b7bde26d-9ebd-49f9-b1d2-11d002084fbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayScene\enemy\Shot">
+      <UniqueIdentifier>{6ff295de-8dd7-422e-96d3-b712d3bda977}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayScene\Camera">
+      <UniqueIdentifier>{1a894803-8e17-4d04-9f0d-4a25d79cf956}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayScene\Floor">
+      <UniqueIdentifier>{f37a87f1-d884-41bd-8629-d4c2eb667f3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayScene\Light">
+      <UniqueIdentifier>{8f095f13-ea85-4b9b-94b3-1ca6ccafeb6b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

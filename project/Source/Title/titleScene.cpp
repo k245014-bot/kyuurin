@@ -1,8 +1,8 @@
 #include "titleScene.h"
-#include "../Library/sceneManager.h"
+#include "../../Library/sceneManager.h"
 #include <assert.h>
 #include <DxLib.h>
-#include "config.h"
+#include "../config.h"
 
 TitleScene::TitleScene():
 	counter(0),pushed(false)

@@ -1,6 +1,6 @@
 #pragma once
-#include "../Library/gameObject.h"
-#include "objData.h"
+#include "../../Library/gameObject.h"
+#include "../objData.h"
 
 static const float ENEMY_SPEED = 0.8f;//0.2
 static const int XZ = 2;

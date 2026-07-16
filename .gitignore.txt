@@ -1,4 +1,0 @@
-/project/.vs
-project
-/project/imgui.ini
-/exe/imgui.ini

@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClInclude Include="Library\app.h" />
     <ClInclude Include="Library\gameObject.h" />
+    <ClInclude Include="Library\myDxLib.h" />
     <ClInclude Include="Library\sceneBase.h" />
     <ClInclude Include="Library\sceneManager.h" />
     <ClInclude Include="Source\bootScene.h" />

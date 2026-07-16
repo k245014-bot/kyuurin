@@ -3,6 +3,8 @@
 #include <string>
 #include "sceneBase.h"
 
+#include "myDxLib.h"
+
 class GameObject {
 public:
 	GameObject() : m_pScene(nullptr), m_pParent(nullptr), m_destroy(false), m_tag("") {}

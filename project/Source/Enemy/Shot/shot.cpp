@@ -1,6 +1,6 @@
 #include "shot.h"
-#include "IsHit.h"
-#include "player.h"
+#include "../../IsHit.h"
+#include "../../Player/player.h"
 
 Shot::Shot(SceneBase* _scene) :GameObject(_scene)
 {

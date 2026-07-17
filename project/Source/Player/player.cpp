@@ -1,13 +1,13 @@
 #include "player.h"
 #include <assert.h>
-#include "character.h"
-#include "enemy.h"	
-#include "floor.h"
-#include "playScene.h"
-#include "isHit.h"
-#include "config.h"
-#include "../Library/sceneManager.h"
-#include "effectManager.h"
+#include "../character.h"
+#include "../Enemy/enemy.h"	
+#include "../Floor/floor.h"
+#include "../playScene.h"
+#include "../isHit.h"
+#include "../config.h"
+#include "../../Library/sceneManager.h"
+#include "../Common/Effect/effectManager.h"
 
 Player::Player(SceneBase * _scene) : GameObject(_scene)
 {

@@ -1,7 +1,8 @@
 #pragma once
-#include "../Library/gameObject.h"
+#include "../../Library/gameObject.h"
 
-class Camera : public GameObject {
+class Camera : public GameObject
+{
 public:
 	Camera(SceneBase* _scene);
 	~Camera();

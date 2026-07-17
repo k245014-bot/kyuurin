@@ -1,6 +1,6 @@
 #pragma once
-#include "../Library/gameObject.h"
-#include "objData.h"
+#include "../../Library/gameObject.h"
+#include "../objData.h"
 
 static const float JUMP_SPEED = 20.0f;
 static const float JUMP_GRAVITY = 0.75f;

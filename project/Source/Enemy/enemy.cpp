@@ -1,12 +1,12 @@
 #include "enemy.h"
-#include "character.h"
-#include "floor.h"	
-#include "playScene.h"
-#include "player.h"
-#include "Ishit.h"
-#include "Shotmanager.h"
-#include "../Library/sceneManager.h"
-#include "effectManager.h"
+#include "../character.h"
+#include "../Floor/floor.h"	
+#include "../playScene.h"
+#include "../Player/player.h"
+#include "../Ishit.h"
+#include "Shot/Shotmanager.h"
+#include "../../Library/sceneManager.h"
+#include "../Common/Effect/effectManager.h"
 #include <assert.h>
 
 Enemy::Enemy(SceneBase * _scene) : GameObject(_scene)

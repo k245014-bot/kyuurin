@@ -1,7 +1,7 @@
 #include "bootScene.h"
-#include "../Library/sceneManager.h"
-#include "debugScreen.h"
-#include "effectManager.h"
+#include "../../Library/sceneManager.h"
+#include "../Common/debugScreen.h"
+#include "../Common/Effect/effectManager.h"
 //#include "fader.h"
 
 BootScene::BootScene()

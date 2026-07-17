@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Library/gameObject.h"
+#include "../../Library/gameObject.h"
 #ifdef _DEBUG
 #include <list>
 #endif
@@ -35,8 +35,8 @@ private:
 #endif
 };
 
-#include "../Library/sceneManager.h"
-#include "../Library/sceneBase.h"
+#include "../../Library/sceneManager.h"
+#include "../../Library/sceneBase.h"
 inline void DebugPrintf(int x, int y, const char* fmt, ...) {
 #ifdef _DEBUG
 	va_list list;

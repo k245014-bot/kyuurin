@@ -1,5 +1,5 @@
 #pragma once
-#include "../Library/gameObject.h"
+#include "../../Library/gameObject.h"
 
 class EffectBase : public GameObject
 {

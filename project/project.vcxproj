@@ -152,6 +152,8 @@
     <ClInclude Include="Source\isHit.h" />
     <ClInclude Include="Source\Light\light.h" />
     <ClInclude Include="Source\objData.h" />
+    <ClInclude Include="Source\ObjectBase\CharaBase.h" />
+    <ClInclude Include="Source\ObjectBase\MovableObject.h" />
     <ClInclude Include="Source\Player\player.h" />
     <ClInclude Include="Source\playScene.h" />
     <ClInclude Include="Source\sceneFactory.h" />
@@ -174,6 +176,8 @@
     <ClCompile Include="Source\Floor\floor.cpp" />
     <ClCompile Include="Source\IsHit.cpp" />
     <ClCompile Include="Source\Light\light.cpp" />
+    <ClCompile Include="Source\ObjectBase\CharaBase.cpp" />
+    <ClCompile Include="Source\ObjectBase\MovableObject.cpp" />
     <ClCompile Include="Source\Player\player.cpp" />
     <ClCompile Include="Source\playScene.cpp" />
     <ClCompile Include="Source\sceneFactory.cpp" />

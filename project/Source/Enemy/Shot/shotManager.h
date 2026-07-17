@@ -1,5 +1,5 @@
 #pragma once
-#include "../../Library/gameObject.h"
+#include "../../../Library/gameObject.h"
 
 static const int SHOT_MAX = 1000;
 //static const int SHOT_DAMAGE = 10;

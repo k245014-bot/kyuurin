@@ -57,6 +57,12 @@
     <ClCompile Include="Source\Title\titleScene.cpp">
       <Filter>TitleScene</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ObjectBase\MovableObject.cpp">
+      <Filter>PlayScene\ObjectBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ObjectBase\CharaBase.cpp">
+      <Filter>PlayScene\ObjectBase</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\config.h" />
@@ -120,6 +126,12 @@
     <ClInclude Include="Source\Title\titleScene.h">
       <Filter>TitleScene</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ObjectBase\MovableObject.h">
+      <Filter>PlayScene\ObjectBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ObjectBase\CharaBase.h">
+      <Filter>PlayScene\ObjectBase</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
@@ -157,6 +169,9 @@
     </Filter>
     <Filter Include="PlayScene\Light">
       <UniqueIdentifier>{8f095f13-ea85-4b9b-94b3-1ca6ccafeb6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayScene\ObjectBase">
+      <UniqueIdentifier>{4d0006ad-07cd-46ab-8526-6e3f9e9028a6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

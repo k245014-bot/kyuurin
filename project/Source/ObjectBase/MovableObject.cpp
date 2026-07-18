@@ -1,6 +1,6 @@
 #include "MovableObject.h"
 
-MovableObject::MovableObject()
+MovableObject::MovableObject(SceneBase* _scene) : GameObject(_scene)
 {
 	position = VZero;
 	rotation = VZero;
@@ -21,6 +21,7 @@ void MovableObject::Draw()
 
 MATRIX MovableObject::GetRotationMatrix() const
 {
+	//ã„ó–ÇÃå≥ÉfÅ[É^Ç™îΩì]ÇµÇƒÇÈÇ©ÇÁÇÌÇ¥Ç∆âÒì]Ç≥ÇπÇƒÇÈ
 	MATRIX base = MGetRotY(DX_PI_F);
 	MATRIX mx = MGetRotX(rotation.x);
 	MATRIX my = MGetRotY(rotation.y);

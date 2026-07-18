@@ -201,13 +201,13 @@ void Enemy::EnemyShot()
 				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, 0, SHOT_SPEED / 100 * coolTimeCounter), direction - DX_PI_F / 70 * (coolTimeCounter - 45));
 				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, abs(cos(DX_PI_F / 40 * coolTimeCounter)) * SHOT_SPEED / 2 * coolTimeCounter , SHOT_SPEED / 100 * coolTimeCounter), direction + DX_PI_F / 140 * (coolTimeCounter + 45));
 				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, abs(cos(DX_PI_F / 40 * coolTimeCounter)) * SHOT_SPEED / 2 * coolTimeCounter , SHOT_SPEED / 100 * coolTimeCounter), direction - DX_PI_F / 140 * (coolTimeCounter + 45));
-				/*‚¨—V‚Ñ
+				//‚¨—V‚Ñ
 				//shot = GetScene()->FindGameObject<ShotManager>();
-				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, 0, SHOT_SPEED / 100 * coolTimeCounter), direction + DX_PI_F / 50 * (coolTimeCounter));
-				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, 0, SHOT_SPEED / 100 * coolTimeCounter), direction - DX_PI_F / 50 * (coolTimeCounter));
-				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, abs(cos(DX_PI_F / 80 * coolTimeCounter)) * SHOT_SPEED  * coolTimeCounter, SHOT_SPEED / 100 * coolTimeCounter), direction + DX_PI_F / 25 * (coolTimeCounter - 45));
-				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, abs(cos(DX_PI_F / 80 * coolTimeCounter)) * SHOT_SPEED  * coolTimeCounter, SHOT_SPEED / 100 * coolTimeCounter), direction - DX_PI_F / 25 * (coolTimeCounter - 45));
-				*/
+				//shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, 0, SHOT_SPEED / 100 * coolTimeCounter), direction + DX_PI_F / 50 * (coolTimeCounter));
+				//shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, 0, SHOT_SPEED / 100 * coolTimeCounter), direction - DX_PI_F / 50 * (coolTimeCounter));
+				//shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, abs(cos(DX_PI_F / 80 * coolTimeCounter)) * SHOT_SPEED  * coolTimeCounter, SHOT_SPEED / 100 * coolTimeCounter), direction + DX_PI_F / 25 * (coolTimeCounter - 45));
+				//shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, abs(cos(DX_PI_F / 80 * coolTimeCounter)) * SHOT_SPEED  * coolTimeCounter, SHOT_SPEED / 100 * coolTimeCounter), direction - DX_PI_F / 25 * (coolTimeCounter - 45));
+				
 			}
 			if (coolTimeCounter <= 50)
 			{

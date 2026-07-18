@@ -1,6 +1,7 @@
 #pragma once
-#include "../../Library/gameObject.h"
+//#include "../../Library/gameObject.h"
 #include "../objData.h"
+#include "../ObjectBase/CharaBase.h"
 
 static const float JUMP_SPEED = 20.0f;
 static const float JUMP_GRAVITY = 0.75f;
@@ -25,13 +26,13 @@ namespace
 	static const float PHP_SPEED = 3.0f;//ê‘ÉQÅ[ÉWÇÃçÌÇÍÇÈë¨ìx
 }
 
-class Character;
+//class Character;
 class Floor;
 class IsHit;
 class Enemy;
 class EffectManager;
 
-class Player : public GameObject
+class Player : public CharaBase/*public GameObject*/
 {
 public:
 	Player(SceneBase* _scene);
@@ -64,10 +65,10 @@ private:
 	};
 	STATE state;
 
-	VECTOR position;
+	/*VECTOR position;*/
 	VECTOR velocity;
 	float direction;
-	Character* chara;
+	//Character* chara;
 	float rotx, rotz;
 
 	void UpdatePlay();	

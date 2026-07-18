@@ -1,6 +1,6 @@
 #include "CharaBase.h"
 
-CharaBase::CharaBase()
+CharaBase::CharaBase(SceneBase* _scene) : MovableObject(_scene)
 {
 	offsets[MODEL_BODY]  = CharaPos.bodyPos;
 	offsets[MODEL_HEAD]  = CharaPos.headPos;
@@ -69,11 +69,11 @@ void CharaBase::SetModel(std::string CharaName)
 	std::string name = "data/model/pg_" + CharaName;
 
 	hModels[MODEL_ID::MODEL_BODY]	= MV1LoadModel((name + "_body.mv1").c_str());
-	hModels[MODEL_ID::MODEL_HEAD]	= MV1LoadModel((name +"red_head.mv1").c_str());
-	hModels[MODEL_ID::MODEL_RHAND]	= MV1LoadModel((name +"red_right_hand.mv1").c_str());
-	hModels[MODEL_ID::MODEL_LHAND]	= MV1LoadModel((name +"red_left_hand.mv1").c_str());
-	hModels[MODEL_ID::MODEL_RFOOT]	= MV1LoadModel((name +"red_right_foot.mv1").c_str());
-	hModels[MODEL_ID::MODEL_LFOOT]	= MV1LoadModel((name +"red_left_foot.mv1").c_str());
+	hModels[MODEL_ID::MODEL_HEAD]	= MV1LoadModel((name +"_head.mv1").c_str());
+	hModels[MODEL_ID::MODEL_RHAND]	= MV1LoadModel((name +"_right_hand.mv1").c_str());
+	hModels[MODEL_ID::MODEL_LHAND]	= MV1LoadModel((name +"_left_hand.mv1").c_str());
+	hModels[MODEL_ID::MODEL_RFOOT]	= MV1LoadModel((name +"_right_foot.mv1").c_str());
+	hModels[MODEL_ID::MODEL_LFOOT]	= MV1LoadModel((name +"_left_foot.mv1").c_str());
 }
 
 void CharaBase::RunAnim(float speed)
@@ -93,22 +93,8 @@ void CharaBase::Reset()
 	offsets[MODEL_LFOOT] = CharaPos.lFootPos;
 	footRotation = 0;
 }
-/*
-void Character::SetPosition(VECTOR pos)
-{
-	position = pos;
-}
 
-void Character::SetRotation(VECTOR rot)
-{
-	MATRIX base = MGetRotY(DX_PI_F);
-	MATRIX mx = MGetRotX(rot.x);
-	MATRIX my = MGetRotY(rot.y);
-	MATRIX mz = MGetRotZ(rot.z);
-	rotation = MMult(MMult(MMult(base, mx), mz), my);
-}
-
-void Character::HitCharacter(MODEL_ID index, int materialNum, bool shine)
+void CharaBase::HitCharacter(MODEL_ID index, int materialNum, bool shine)
 {
 	for (int i = 0; i < materialNum; i++)
 	{
@@ -119,4 +105,12 @@ void Character::HitCharacter(MODEL_ID index, int materialNum, bool shine)
 	}
 }
 
-*/
+void CharaBase::AllHitCharacter(bool shine)
+{
+	HitCharacter(MODEL_ID::MODEL_HEAD, 2, shine);
+	HitCharacter(MODEL_ID::MODEL_BODY, 2, shine);
+	HitCharacter(MODEL_ID::MODEL_RHAND, 1, shine);
+	HitCharacter(MODEL_ID::MODEL_LHAND, 1, shine);
+	HitCharacter(MODEL_ID::MODEL_RFOOT, 1, shine);
+	HitCharacter(MODEL_ID::MODEL_LFOOT, 1, shine);
+}

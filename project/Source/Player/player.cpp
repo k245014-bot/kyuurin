@@ -9,15 +9,9 @@
 #include "../../Library/sceneManager.h"
 #include "../Common/Effect/effectManager.h"
 
-Player::Player(SceneBase * _scene) : GameObject(_scene)
+Player::Player(SceneBase* _scene) : CharaBase(_scene)
 {
-	chara = new Character();
-	chara->SetModel(Character::MODEL_ID::MODEL_BODY, MV1LoadModel("data\\model\\pg_red_body.mv1"));
-	chara->SetModel(Character::MODEL_ID::MODEL_HEAD, MV1LoadModel("data\\model\\pg_red_head.mv1"));
-	chara->SetModel(Character::MODEL_ID::MODEL_RHAND, MV1LoadModel("data\\model\\pg_red_right_hand.mv1"));
-	chara->SetModel(Character::MODEL_ID::MODEL_LHAND, MV1LoadModel("data\\model\\pg_red_left_hand.mv1"));
-	chara->SetModel(Character::MODEL_ID::MODEL_RFOOT, MV1LoadModel("data\\model\\pg_red_right_foot.mv1"));
-	chara->SetModel(Character::MODEL_ID::MODEL_LFOOT, MV1LoadModel("data\\model\\pg_red_left_foot.mv1"));
+	SetModel("red");
 
 	position = VGet(-100.0f, 0, -200.0f);
 	velocity = VGet(0,0,0);
@@ -25,8 +19,8 @@ Player::Player(SceneBase * _scene) : GameObject(_scene)
 	
 	rotx = 0;
 	rotz = 0;
-	chara->SetPosition(position);
-	chara->SetRotation(VGet(0,direction,0));
+
+	rotation = VECTOR3(0, direction, 0);
 
 	hitSound = LoadSoundMem("data\\sound\\hithead.wav");
 	state = STATE::ST_STOP;
@@ -58,8 +52,7 @@ Player::Player(SceneBase * _scene) : GameObject(_scene)
 	effect = SceneManager::CommonScene()->FindGameObject<EffectManager>();
 	copyPos = VGet(0, 0, 0);
 
-
-	retHp = PHP_SIZE + PHP_BAR_SIZE;////////////////////
+	retHp = PHP_SIZE + PHP_BAR_SIZE;
 	hitPos = V2Get(0, 0);
 
 	atkSound = LoadSoundMem("data\\sound\\atkSE_Player.wav");
@@ -77,7 +70,6 @@ Player::Player(SceneBase * _scene) : GameObject(_scene)
 Player::~Player()
 {
 	DeleteSoundMem(hitSound);
-	delete chara;
 }
 
 void Player::Update()
@@ -115,7 +107,6 @@ void Player::Update()
 	};
 
 	RetGauge();
-	//chara->Update();
 }
 
 void Player::UpdatePlay()
@@ -128,10 +119,10 @@ void Player::UpdatePlay()
 	{
 		velocity.z += cosf(direction - atan2(key.ThumbLY, key.ThumbLX) + DX_PI_F * 0.5) * 0.2f * PLAYER_SPEED;
 		velocity.x += sinf(direction - atan2(key.ThumbLY, key.ThumbLX) + DX_PI_F * 0.5) * 0.2f * PLAYER_SPEED;
-		chara->Run(10.0f);
+		RunAnim(10.0f);
 	}
 	else
-		chara->Stop();
+		RunStopAnim();
 
 	if (GetJoypadNum() == 0)
 	{
@@ -139,16 +130,17 @@ void Player::UpdatePlay()
 		{
 			velocity.z += cosf(direction) * 0.2f * PLAYER_SPEED;
 			velocity.x += sinf(direction) * 0.2f * PLAYER_SPEED;
-			chara->Run(10.0f);
+			//chara->Run(10.0f);
+			RunAnim(10.0f);
 		}
 		else if (CheckHitKey(KEY_INPUT_DOWN))
 		{
 			velocity.z -= cosf(direction) * PLAYER_SPEED / 10;
 			velocity.x -= sinf(direction) * PLAYER_SPEED / 10;
-			chara->Run(1.0f);
+			RunAnim(10.0f);
 		}
 		else
-			chara->Stop();
+			RunStopAnim();
 	}
 	
 	if (CheckHitKey(KEY_INPUT_Z) || key.Buttons[XINPUT_BUTTON_A])
@@ -169,15 +161,15 @@ void Player::UpdatePlay()
 	}
 	
 	position = VAdd(position, velocity);
-	chara->SetPosition(position);
-	chara->SetRotation(VGet(0, direction, 0));
+	rotation = VECTOR3(0, direction, 0);
 	position = floor->SetPlayerPos(position);
-	chara->Update();
+
+	CharaBase::Update();
 }
 
 void Player::JumpMove()
 {
-	chara->Reset();
+	Reset();
 	velocity.y -= JUMP_GRAVITY;
 	if (position.y < 0)
 	{
@@ -242,7 +234,6 @@ void Player::JumpMove()
 			PlaySoundMem(boostSound, DX_PLAYTYPE_BACK);
 
 		isBoost = true;
-		//velocity = VGet(0, 0, 0);
 		boostCounter = 0;
 	}
 
@@ -250,13 +241,12 @@ void Player::JumpMove()
 		keyCheck = true;
 
 	position = VAdd(position, velocity);
-	chara->SetPosition(position);
 	position = floor->SetPlayerPos(position);
 }
 
 void Player::Atk()
 {
-	chara->Reset();
+	Reset();
 	switch (turnIndex)
 	{
 	case 0:
@@ -324,8 +314,7 @@ void Player::Atk()
 	}
 
 	position = VAdd(position, velocity);
-	chara->SetPosition(position);
-	chara->SetRotation(VGet(0, turnDirection, 0));
+	rotation = VECTOR3(0, turnDirection, 0);
 	position = floor->SetPlayerPos(position);
 }
 
@@ -340,7 +329,7 @@ void Player::Damage(int _damage)
 		return;
 	}
 
-	chara->Reset();
+	Reset();
 	myHp -= _damage;
 	copyPos = VGet(position.x, 50, position.z);
 	state = STATE::ST_DAMAGE;
@@ -362,15 +351,10 @@ void Player::DamageMove()
 	hitCounter++;
 	if (hitCounter <= 2)
 	{
-		chara->HitCharacter(Character::MODEL_ID::MODEL_HEAD, 2, true);///
-		chara->HitCharacter(Character::MODEL_ID::MODEL_BODY, 2, true);///
-		chara->HitCharacter(Character::MODEL_ID::MODEL_RHAND, 1, true);///
-		chara->HitCharacter(Character::MODEL_ID::MODEL_LHAND, 1, true);///
-		chara->HitCharacter(Character::MODEL_ID::MODEL_RFOOT, 1, true);///
-		chara->HitCharacter(Character::MODEL_ID::MODEL_LFOOT, 1, true);///
+		AllHitCharacter(true);
+
 		velocity = VGet(0, 0, 0);
 		position.y = 0;
-		//hitPos = V2Get(20, -20);
 	}
 	else if (hitCounter <= 10)
 	{
@@ -384,12 +368,7 @@ void Player::DamageMove()
 	}
 	else if (hitCounter <= 40)
 	{
-		chara->HitCharacter(Character::MODEL_ID::MODEL_HEAD, 2, false);///
-		chara->HitCharacter(Character::MODEL_ID::MODEL_BODY, 2, false);///
-		chara->HitCharacter(Character::MODEL_ID::MODEL_RHAND, 1, false);///
-		chara->HitCharacter(Character::MODEL_ID::MODEL_LHAND, 1, false);///
-		chara->HitCharacter(Character::MODEL_ID::MODEL_RFOOT, 1, false);///
-		chara->HitCharacter(Character::MODEL_ID::MODEL_LFOOT, 1, false);///
+		AllHitCharacter(false);
 	}
 	else
 	{
@@ -407,18 +386,13 @@ void Player::DamageMove()
 
 
 	position = VAdd(position, velocity);
-	chara->SetPosition(position);
+	//chara->SetPosition(position);
 	position = floor->SetPlayerPos(position);
 }
 
 void Player::LaserDamage()
 {
-	chara->HitCharacter(Character::MODEL_ID::MODEL_HEAD, 2, true);///
-	chara->HitCharacter(Character::MODEL_ID::MODEL_BODY, 2, true);///
-	chara->HitCharacter(Character::MODEL_ID::MODEL_RHAND, 1, true);///
-	chara->HitCharacter(Character::MODEL_ID::MODEL_LHAND, 1, true);///
-	chara->HitCharacter(Character::MODEL_ID::MODEL_RFOOT, 1, true);///
-	chara->HitCharacter(Character::MODEL_ID::MODEL_LFOOT, 1, true);///
+	AllHitCharacter(true);
 
 	if (!effect->IsLaser())
 	{
@@ -452,12 +426,8 @@ void Player::LaserDamage()
 			rotx = 0;
 			state = STATE::ST_PLAY;
 			hitCounter = 0;
-			chara->HitCharacter(Character::MODEL_ID::MODEL_HEAD, 2, false);///
-			chara->HitCharacter(Character::MODEL_ID::MODEL_BODY, 2, false);///
-			chara->HitCharacter(Character::MODEL_ID::MODEL_RHAND, 1, false);///
-			chara->HitCharacter(Character::MODEL_ID::MODEL_LHAND, 1, false);///
-			chara->HitCharacter(Character::MODEL_ID::MODEL_RFOOT, 1, false);///
-			chara->HitCharacter(Character::MODEL_ID::MODEL_LFOOT, 1, false);///
+
+			AllHitCharacter(false);
 		}
 	}
 	else
@@ -474,8 +444,7 @@ void Player::LaserDamage()
 	}
 
 	position = VAdd(position, velocity);
-	chara->SetPosition(position);
-	chara->SetRotation(VGet(rotx, direction, 0));
+	rotation = VECTOR3(rotx, direction, 0);
 	position = floor->SetPlayerPos(position);
 }
 
@@ -508,7 +477,7 @@ void Player::DeadEff()
 void Player::Draw()
 {
 	if (!isDead)
-		chara->Draw();
+		CharaBase::Draw();
 
 	DrawRectGraph(hpBar.pos.x, hpBar.pos.y, 0, 0, HP_BAR_X, PHP_BAR_SIZE_Y, hpBar.image, true);//フレーム
 	DrawRectGraph(hpBar.pos.x + hitPos.x, hpBar.pos.y + hitPos.y, 0, PHP_BAR_SIZE_Y * 3, retHp, PHP_BAR_SIZE_Y, hpBar.image, true);//赤ゲージ

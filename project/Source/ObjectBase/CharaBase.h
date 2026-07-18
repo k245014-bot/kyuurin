@@ -4,7 +4,7 @@
 class CharaBase :public MovableObject
 {
 public:
-	CharaBase();
+	CharaBase(SceneBase* _scene);
 	virtual ~CharaBase();
 
 	void Update()override;
@@ -51,6 +51,10 @@ protected:
 	void RunStopAnim();
 	//足をデフォルトの位置に戻す
 	void Reset();
+	//指定された部位を赤く光らせる
+	void HitCharacter(MODEL_ID index, int materialNum, bool shine);
+	//部位を赤く光らせる
+	void AllHitCharacter(bool shine);
 
 	int hModels[MODEL_NUM];
 	VECTOR3 offsets[MODEL_NUM];

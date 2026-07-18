@@ -4,7 +4,7 @@
 class MovableObject :public GameObject
 {
 public:
-	MovableObject();
+	MovableObject(SceneBase* _scene);
 	virtual ~MovableObject();
 
 	void Update()override;

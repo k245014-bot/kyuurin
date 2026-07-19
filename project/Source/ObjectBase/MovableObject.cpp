@@ -13,6 +13,7 @@ MovableObject::~MovableObject()
 
 void MovableObject::Update()
 {
+
 }
 
 void MovableObject::Draw()
@@ -39,3 +40,14 @@ void MovableObject::Move(VECTOR3 _vector, float _speed)
 {
 	position += _vector * MGetRotY(rotation.y) * _speed;
 }
+
+VECTOR3 MovableObject::CalcMoveVector(float _angle, float _speed)
+{
+	return VECTOR3(sinf(_angle) * _speed, 0, cosf(_angle) * _speed);
+}
+
+//void MovableObject::Move(VECTOR3 _vector, float _rotY, float _speed)
+//{
+//	/*_vector.y = 0.0f;*/
+//	position += _vector * MGetRotY(_rotY) * _speed;
+//}

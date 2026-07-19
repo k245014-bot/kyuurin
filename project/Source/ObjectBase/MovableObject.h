@@ -9,12 +9,18 @@ public:
 
 	void Update()override;
 	void Draw()override;
+
+	VECTOR3 GetRotation() { return rotation; }
 protected:
 	MATRIX GetRotationMatrix() const;
 	//‚Ü‚Á‚·‚®i‚Ş
 	void NormalMove(float _speed);
 	//w’è‚µ‚½•ûŒü‚É‚·‚·‚Ş
 	void Move(VECTOR3 _vector, float _speed);
+
+	VECTOR3 CalcMoveVector(float _angle, float _speed);
+	////w’è‚µ‚½•ûŒü‚É‚·‚·‚Ş
+	//void Move(VECTOR3 _vector,float _rotY, float _speed);
 
 	VECTOR3 position;
 	VECTOR3 rotation;

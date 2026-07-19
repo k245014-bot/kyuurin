@@ -3,14 +3,14 @@
 #include "../objData.h"
 #include "../ObjectBase/CharaBase.h"
 
-static const float JUMP_SPEED = 20.0f;
-static const float JUMP_GRAVITY = 0.75f;
+static const float JUMP_SPEED = 20.0f/*1.5f*/;
+static const float JUMP_GRAVITY = 0.75f/*0.075f*/;
 static const float BOOST_SPEED = 25.0f;
 static const float ANGULAR_SPEED = 0.1f;//UŒ‚‚ÌŠp“x•Ï‚¦‚é‘¬“x
 static const float ATK_RANGE = 125;//”ÍˆÍ
 static const float PLAYER_DAMAGE = 10;//10
 static const int PLAYER_HP_MAX = 50;
-static const float PLAYER_SPEED = 3;
+static const float PLAYER_SPEED = 10;
 static const int HIT_STOOP = 15;//20
 
 static const float VZERO = 10.0f;
@@ -31,6 +31,8 @@ class Floor;
 class IsHit;
 class Enemy;
 class EffectManager;
+class InputManager;
+class Camera;
 
 class Player : public CharaBase/*public GameObject*/
 {
@@ -40,7 +42,6 @@ public:
 	void Update() override;
 	void Draw() override;
 	VECTOR GetPosition() const { return position; }
-	float GetDirection() const { return direction; }
 	bool IsDead() { return isDead; }
 
 	void StartPlay();
@@ -53,6 +54,12 @@ public:
 	void HitLaser();
 
 private:
+	IsHit* isHit;
+	Enemy* enemy;
+	EffectManager* effect;
+	InputManager* input;
+	Camera* camera;
+	Floor* floor;
 
 	enum class STATE 
 	{
@@ -66,8 +73,8 @@ private:
 	STATE state;
 
 	/*VECTOR position;*/
-	VECTOR velocity;
-	float direction;
+	VECTOR3 velocity;
+	//float direction;
 	//Character* chara;
 	float rotx, rotz;
 
@@ -77,18 +84,15 @@ private:
 	void DamageMove();//ƒ_ƒ[ƒW‚ğH‚ç‚Á‚½‚Ìˆ—
 	void RetGauge();//ÔƒQ[ƒW‚Ìí‚ê‚éˆ—
 	void DeadEff();
-
-	Floor* floor;
-
-	XINPUT_STATE key;
-
+	void LookAt();
+	
 	bool isBoost;
 	VECTOR _boost;
 	int boostCounter;
 
 	VECTOR velocityCopy;
 
-	bool keyCheck;//’·‰Ÿ‚µ–h~
+	//bool keyCheck;//’·‰Ÿ‚µ–h~
 
 	float turnDirection;//UŒ‚‚Ì‰ñ“]
 	int turnIndex;
@@ -102,9 +106,6 @@ private:
 	int hitCounter;
 	bool isAtkDamage;//ƒvƒŒƒCƒ„[‚ªUŒ‚‚ğ“–‚Ä‚½
 
-	IsHit* isHit;
-	Enemy* enemy;
-	EffectManager* effect;
 	VECTOR copyPos;
 
 	float retHp;//ÔHP‚Ì‚â‚Â
@@ -122,4 +123,7 @@ private:
 
 	float LaserDamagePos;
 
+	float goalRotY;
+
+	float copyRotY;
 };

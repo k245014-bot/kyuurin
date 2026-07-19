@@ -144,6 +144,7 @@
     <ClInclude Include="Source\Common\debugScreen.h" />
     <ClInclude Include="Source\Common\Effect\effect.h" />
     <ClInclude Include="Source\Common\Effect\effectManager.h" />
+    <ClInclude Include="Source\Common\Imput\inputManager.h" />
     <ClInclude Include="Source\config.h" />
     <ClInclude Include="Source\Enemy\enemy.h" />
     <ClInclude Include="Source\Enemy\Shot\shot.h" />
@@ -170,6 +171,7 @@
     <ClCompile Include="Source\Common\debugScreen.cpp" />
     <ClCompile Include="Source\Common\Effect\effect.cpp" />
     <ClCompile Include="Source\Common\Effect\effectManager.cpp" />
+    <ClCompile Include="Source\Common\Imput\inputManager.cpp" />
     <ClCompile Include="Source\Enemy\enemy.cpp" />
     <ClCompile Include="Source\Enemy\Shot\shot.cpp" />
     <ClCompile Include="Source\Enemy\Shot\shotManager.cpp" />

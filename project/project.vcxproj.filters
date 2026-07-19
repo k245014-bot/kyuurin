@@ -63,6 +63,9 @@
     <ClCompile Include="Source\ObjectBase\CharaBase.cpp">
       <Filter>PlayScene\ObjectBase</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Common\Imput\inputManager.cpp">
+      <Filter>common\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\config.h" />
@@ -132,6 +135,9 @@
     <ClInclude Include="Source\ObjectBase\CharaBase.h">
       <Filter>PlayScene\ObjectBase</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Common\Imput\inputManager.h">
+      <Filter>common\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
@@ -172,6 +178,9 @@
     </Filter>
     <Filter Include="PlayScene\ObjectBase">
       <UniqueIdentifier>{4d0006ad-07cd-46ab-8526-6e3f9e9028a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\Input">
+      <UniqueIdentifier>{3a664210-be4b-4daa-bebc-0dadc61c1f83}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

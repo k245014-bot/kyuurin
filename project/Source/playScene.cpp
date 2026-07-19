@@ -7,15 +7,16 @@
 #include "Light/light.h"
 #include "Floor/floor.h"
 #include "Enemy/Shot/shotManager.h"
+#include "Common/Imput/inputManager.h"
 
 PlayScene::PlayScene()
 {
+	CreateGameObject<InputManager>();
 	camera = CreateGameObject<Camera>();
 	CreateGameObject<Light>();
 	CreateGameObject<Floor>();
 	enemy = CreateGameObject<Enemy>();
 	player = CreateGameObject<Player>();
-	//shot = CreateGameObject<Shot>();
 	shotManager = CreateGameObject<ShotManager>();
 
 	enemy->PlayerData(player);

@@ -273,7 +273,7 @@ void Enemy::DamageMove()
 	damageCounter++;
 	if (damageCounter == 1)
 	{
-		chara->SetRotation(VGet(DX_PI_F * -0.25, player->GetDirection() + DX_PI_F, 0.0f));
+		chara->SetRotation(VGet(DX_PI_F * -0.25, player->GetRotation().y + DX_PI_F, 0.0f));
 
 		chara->HitCharacter(Character::MODEL_ID::MODEL_HEAD, 2, true);///
 		chara->HitCharacter(Character::MODEL_ID::MODEL_BODY, 2, true);///

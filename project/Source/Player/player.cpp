@@ -8,19 +8,26 @@
 #include "../config.h"
 #include "../../Library/sceneManager.h"
 #include "../Common/Effect/effectManager.h"
+#include "../Common/Imput/inputManager.h"
+#include "../Camera/camera.h"
 
 Player::Player(SceneBase* _scene) : CharaBase(_scene)
 {
+	isHit = GetScene()->FindGameObject<IsHit>();
+	enemy = GetScene()->FindGameObject<Enemy>();
+	floor = GetScene()->FindGameObject<Floor>();
+	input = GetScene()->FindGameObject<InputManager>();
+	camera = GetScene()->FindGameObject <Camera>();
+
 	SetModel("red");
 
 	position = VGet(-100.0f, 0, -200.0f);
 	velocity = VGet(0,0,0);
-	direction = 0;
 	
 	rotx = 0;
 	rotz = 0;
 
-	rotation = VECTOR3(0, direction, 0);
+	rotation = VZero;
 
 	hitSound = LoadSoundMem("data\\sound\\hithead.wav");
 	state = STATE::ST_STOP;
@@ -29,14 +36,8 @@ Player::Player(SceneBase* _scene) : CharaBase(_scene)
 	boostCounter = 0;
 	velocityCopy = VGet(0, 0, 0);
 
-	keyCheck = true;
 	turnDirection = 0;
 	turnIndex = 0;
-
-	isHit = GetScene()->FindGameObject<IsHit>();
-	enemy = GetScene()->FindGameObject<Enemy>();
-	floor = GetScene()->FindGameObject<Floor>();
-
 
 	myHp = PLAYER_HP_MAX;
 
@@ -65,6 +66,10 @@ Player::Player(SceneBase* _scene) : CharaBase(_scene)
 	targetDirection = 0;
 
 	hpState = 1;
+
+	goalRotY = 0;
+
+	copyRotY = 0;
 }
 
 Player::~Player()
@@ -74,17 +79,7 @@ Player::~Player()
 
 void Player::Update()
 {
-	GetJoypadXInputState(DX_INPUT_PAD1, & key);
-	
-	if (CheckHitKey(KEY_INPUT_RIGHT) || key.ThumbRX > 10000)//
-	{
-		direction += 5.0f * DX_PI_F / 180.0f;
-	}
-	else if (CheckHitKey(KEY_INPUT_LEFT) || key.ThumbRX < -10000)//
-	{
-		direction -= 5.0f * DX_PI_F / 180.0f;
-	}
-	
+	camera->SetPlayerPosition(position);
 	switch (state)
 	{
 	case STATE::ST_STOP:
@@ -109,59 +104,50 @@ void Player::Update()
 	RetGauge();
 }
 
+void Player::Draw()
+{
+	if (!isDead)
+		CharaBase::Draw();
+
+	DrawRectGraph(hpBar.pos.x, hpBar.pos.y, 0, 0, HP_BAR_X, PHP_BAR_SIZE_Y, hpBar.image, true);//フレーム
+	DrawRectGraph(hpBar.pos.x + hitPos.x, hpBar.pos.y + hitPos.y, 0, PHP_BAR_SIZE_Y * 3, retHp, PHP_BAR_SIZE_Y, hpBar.image, true);//赤ゲージ
+	DrawRectGraph(hpBar.pos.x + hitPos.x, hpBar.pos.y + hitPos.y, 0, PHP_BAR_SIZE_Y * hpState, PHP_SIZE + PHP_BAR_SIZE * myHp / PLAYER_HP_MAX, PHP_BAR_SIZE_Y, hpBar.image, true);//hp
+}
+
 void Player::UpdatePlay()
 {
-	GetJoypadXInputState(DX_INPUT_PAD1, &key);
 	// すべる床での移動
 	velocity = VScale(velocity, 0.9f);
-	
-	if (abs(key.ThumbLX) > 10000 || abs(key.ThumbLY) > 10000)
+
+	//ジャンプの処理
+	if (input->GetKeyPush().isJump)
 	{
-		velocity.z += cosf(direction - atan2(key.ThumbLY, key.ThumbLX) + DX_PI_F * 0.5) * 0.2f * PLAYER_SPEED;
-		velocity.x += sinf(direction - atan2(key.ThumbLY, key.ThumbLX) + DX_PI_F * 0.5) * 0.2f * PLAYER_SPEED;
+		velocity = velocity / 2;
+		velocity.y = JUMP_SPEED;
+		state = STATE::ST_JUMP;
+		PlaySoundMem(jumpSound, DX_PLAYTYPE_BACK);
+	}
+	//攻撃の処理
+	if (input->GetKeyPush().isAtk)
+	{
+		turnDirection = copyRotY = rotation.y;
+		state = STATE::ST_ATK;
+	}
+	
+	//キャラの移動の処理
+	if (input->GetKeyPush().sickLX != 0 || input->GetKeyPush().sickLY != 0)
+	{
+		float keyVec = atan2f(input->GetKeyPush().sickLY, input->GetKeyPush().sickLX);
+		velocity += CalcMoveVector(camera->GetRotation().y - keyVec + DX_PI_F * 0.5, 0.2f * PLAYER_SPEED);
+
+		goalRotY = camera->GetRotation().y - keyVec + DX_PI_F * 0.5;
+		LookAt();
 		RunAnim(10.0f);
 	}
 	else
 		RunStopAnim();
 
-	if (GetJoypadNum() == 0)
-	{
-		if (CheckHitKey(KEY_INPUT_UP))
-		{
-			velocity.z += cosf(direction) * 0.2f * PLAYER_SPEED;
-			velocity.x += sinf(direction) * 0.2f * PLAYER_SPEED;
-			//chara->Run(10.0f);
-			RunAnim(10.0f);
-		}
-		else if (CheckHitKey(KEY_INPUT_DOWN))
-		{
-			velocity.z -= cosf(direction) * PLAYER_SPEED / 10;
-			velocity.x -= sinf(direction) * PLAYER_SPEED / 10;
-			RunAnim(10.0f);
-		}
-		else
-			RunStopAnim();
-	}
-	
-	if (CheckHitKey(KEY_INPUT_Z) || key.Buttons[XINPUT_BUTTON_A])
-	{
-		velocity.y = JUMP_SPEED;
-		keyCheck = false;
-		state = STATE::ST_JUMP;
-		PlaySoundMem(jumpSound, DX_PLAYTYPE_BACK);
-	}
-	else if (CheckHitKey(KEY_INPUT_Z) == 0 || key.Buttons[XINPUT_BUTTON_A] == 0)
-	{
-		keyCheck = true;
-		if ((CheckHitKey(KEY_INPUT_X) || key.Buttons[XINPUT_BUTTON_B]))
-		{
-			turnDirection = direction;
-			state = STATE::ST_ATK;
-		}
-	}
-	
-	position = VAdd(position, velocity);
-	rotation = VECTOR3(0, direction, 0);
+	position += velocity;
 	position = floor->SetPlayerPos(position);
 
 	CharaBase::Update();
@@ -171,6 +157,7 @@ void Player::JumpMove()
 {
 	Reset();
 	velocity.y -= JUMP_GRAVITY;
+	//地面に着地した時
 	if (position.y < 0)
 	{
 		velocity.y = 0;
@@ -188,13 +175,11 @@ void Player::JumpMove()
 
 		if (boostCounter == 0)
 		{
-			velocity.z += cosf(direction - inputDirection) * BOOST_SPEED;
-			velocity.x += sinf(direction - inputDirection) * BOOST_SPEED;
+			velocity += CalcMoveVector(camera->GetRotation().y - inputDirection, BOOST_SPEED);
 		}
 		else
 		{
-			velocity.z -= cosf(direction - inputDirection) * 0.1;
-			velocity.x -= sinf(direction - inputDirection) * 0.1;
+			velocity += CalcMoveVector(camera->GetRotation().y - inputDirection, 0.1);
 			if (boostCounter >= BOOST_SPEED)
 			{
 				isBoost = false;//
@@ -203,24 +188,25 @@ void Player::JumpMove()
 		}
 		boostCounter++;
 	}
-	else if ((CheckHitKey(KEY_INPUT_Z) || key.Buttons[XINPUT_BUTTON_A] )&& velocity.y < 0 && keyCheck)
+	else if (input->GetKeyPush().isJump && velocity.y < 0 )
 	{
-		if (CheckHitKey(KEY_INPUT_UP) != 0 || key.ThumbLY > 10000)
+		const float stickParam = 0.25f;
+		if (input->GetKeyPush().sickLY > stickParam)
 		{
 			_boost.z = 1;
 		}
-		else if (CheckHitKey(KEY_INPUT_DOWN) != 0 || key.ThumbLY < -10000)//DOWN
+		else if (input->GetKeyPush().sickLY < -stickParam)//DOWN
 		{
 			_boost.z = -1;
 		}
 		else
 			_boost.z = 0;
 
-		if (CheckHitKey(KEY_INPUT_RIGHT) != 0 || key.ThumbLX > 10000)//RIGHT
+		if (input->GetKeyPush().sickLX > stickParam)//RIGHT
 		{
 			_boost.x = 1;
 		}
-		else if (CheckHitKey(KEY_INPUT_LEFT) != 0 || key.ThumbLX < -10000)//LEFT
+		else if (input->GetKeyPush().sickLX < -stickParam)//LEFT
 		{
 			_boost.x = -1;
 		}
@@ -236,11 +222,8 @@ void Player::JumpMove()
 		isBoost = true;
 		boostCounter = 0;
 	}
-
-	if (CheckHitKey(KEY_INPUT_Z) ==0 || abs(key.ThumbLX) < 10000)
-		keyCheck = true;
-
-	position = VAdd(position, velocity);
+	
+	position += velocity;
 	position = floor->SetPlayerPos(position);
 }
 
@@ -252,13 +235,13 @@ void Player::Atk()
 	case 0:
 		turnDirection += ANGULAR_SPEED;
 		velocity = VScale(velocity, 0.5);
-		if (turnDirection >= ANGULAR_SPEED * 10 + direction)
+		if (turnDirection >= ANGULAR_SPEED * 10 + copyRotY)
 			turnIndex = 1;
 		break;
 	case 1:
 		turnDirection -= ANGULAR_SPEED * 3;
 		VECTOR enemyPos = enemy->GetPosition();
-		VECTOR atkDirection = VGet(sinf(direction) * ATK_RANGE * 0.3f , 0, cosf(direction) * ATK_RANGE * 0.3f);//当たり判定を前にずらす数値
+		VECTOR atkDirection = VGet(sinf(copyRotY) * ATK_RANGE * 0.3f , 0, cosf(copyRotY) * ATK_RANGE * 0.3f);//当たり判定を前にずらす数値
 		
 		if (isHit->_IsHit(VAdd(position, atkDirection), enemyPos, ATK_RANGE * 1.4 ))
 		{
@@ -271,7 +254,7 @@ void Player::Atk()
 			isAtkDamage = true;
 		}
 		
-		if (turnDirection <= ANGULAR_SPEED * -10 + direction)
+		if (turnDirection <= ANGULAR_SPEED * -10 + copyRotY)
 		{	
 			if (isAtkDamage)
 			{
@@ -291,9 +274,9 @@ void Player::Atk()
 		break;
 	case 2:
 		turnDirection += ANGULAR_SPEED;
-		if (turnDirection >= direction)
+		if (turnDirection >= copyRotY)
 		{
-			turnDirection = direction;
+			turnDirection = copyRotY;
 			state = STATE::ST_PLAY;
 			turnIndex = 0;
 		}
@@ -376,17 +359,13 @@ void Player::DamageMove()
 		hitCounter = 0;
 		isDamage = false;///
 	}
-	//if(hitCounter == HIT_STOOP)
-		//effect->Creat(copyPos, effect->ENEMYATK_EFFECT, 1, VGet(1, 1, 1), 200, 0);
 	if (hitCounter > HIT_STOOP)
 	{
 		copyPos = VGet(position.x, 50, position.z);
 		effect->SetPos(copyPos, 0);
 	}
 
-
 	position = VAdd(position, velocity);
-	//chara->SetPosition(position);
 	position = floor->SetPlayerPos(position);
 }
 
@@ -444,7 +423,7 @@ void Player::LaserDamage()
 	}
 
 	position = VAdd(position, velocity);
-	rotation = VECTOR3(rotx, direction, 0);
+	rotation = VECTOR3(rotx, rotation.y, 0);
 	position = floor->SetPlayerPos(position);
 }
 
@@ -474,16 +453,6 @@ void Player::DeadEff()
 	state = STATE::ST_STOP;
 }
 
-void Player::Draw()
-{
-	if (!isDead)
-		CharaBase::Draw();
-
-	DrawRectGraph(hpBar.pos.x, hpBar.pos.y, 0, 0, HP_BAR_X, PHP_BAR_SIZE_Y, hpBar.image, true);//フレーム
-	DrawRectGraph(hpBar.pos.x + hitPos.x, hpBar.pos.y + hitPos.y, 0, PHP_BAR_SIZE_Y * 3, retHp, PHP_BAR_SIZE_Y, hpBar.image, true);//赤ゲージ
-	DrawRectGraph(hpBar.pos.x + hitPos.x, hpBar.pos.y + hitPos.y, 0, PHP_BAR_SIZE_Y * hpState, PHP_SIZE + PHP_BAR_SIZE * myHp / PLAYER_HP_MAX, PHP_BAR_SIZE_Y, hpBar.image, true);//hp
-}
-
 void Player::StartPlay()
 {
 	state = STATE::ST_PLAY;
@@ -492,4 +461,20 @@ void Player::StartPlay()
 void Player::StopPlay()
 {
 	state = STATE::ST_STOP;
+}
+
+void Player::LookAt()
+{
+	//向く方向の計算
+	float sign = goalRotY - rotation.y;
+	sign -= floorf(sign / DX_PI_F / 2) * DX_PI_F * 2;
+	const float LOOK_SPEED = 0.2f;
+
+	//実際に向く処理
+	if (sign > DX_PI_F)
+		sign -= 2 * DX_PI_F;
+	if (sign != 0)
+		rotation.y += LOOK_SPEED * sign / DX_PI;
+	else
+		rotation.y = goalRotY;
 }

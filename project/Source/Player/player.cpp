@@ -1,6 +1,5 @@
 #include "player.h"
 #include <assert.h>
-#include "../character.h"
 #include "../Enemy/enemy.h"	
 #include "../Floor/floor.h"
 #include "../playScene.h"
@@ -23,7 +22,6 @@ Player::Player(SceneBase* _scene) : CharaBase(_scene)
 	SetModel("red");
 
 	atkSound = LoadSoundMem("data\\sound\\atkSE_Player.wav");
-	//hitSound = LoadSoundMem("data\\sound\\atkSE_Enemy.wav");
 	hitSound = LoadSoundMem("data\\sound\\hithead.wav");
 	jumpSound = LoadSoundMem("data\\sound\\jumpSound.wav");
 	boostSound = LoadSoundMem("data\\sound\\boostSound.wav");

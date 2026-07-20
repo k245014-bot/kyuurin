@@ -88,7 +88,7 @@ void PlayScene::Update()
 		}
 	}
 
-	if (enemy->IsDead())
+	if (enemy->GetIsDead())
 	{
 		if (isDead)
 		{
@@ -96,7 +96,7 @@ void PlayScene::Update()
 			isDead = false;
 		}
 	}
-	if (player->IsDead())
+	if (player->GetIsDead())
 	{
 		if (isDead)
 		{

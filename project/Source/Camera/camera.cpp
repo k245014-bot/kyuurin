@@ -25,7 +25,7 @@ void Camera::Update()
 {
 	if (!deadPlayer)
 	{
-		rotation.y += 1.5 * input->GetKeyPush().sickRX / 60;
+		rotation.y += 1.5f * input->GetKeyPush().sickRX / 60.0f;
 	}
 	else
 		DeadMove();

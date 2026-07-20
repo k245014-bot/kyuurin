@@ -10,7 +10,8 @@ public:
 	void Update()override;
 	void Draw()override;
 
-	VECTOR3 GetRotation() { return rotation; }
+	const VECTOR3 GetPosition() { return position; }
+	const VECTOR3 GetRotation() { return rotation; }
 protected:
 	MATRIX GetRotationMatrix() const;
 	//Ç‹Ç¡Ç∑ÇÆêiÇﬁ

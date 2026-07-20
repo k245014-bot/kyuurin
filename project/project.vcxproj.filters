@@ -17,7 +17,6 @@
     <ClCompile Include="Library\sceneBase.cpp">
       <Filter>Library</Filter>
     </ClCompile>
-    <ClCompile Include="Source\character.cpp" />
     <ClCompile Include="Source\IsHit.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
@@ -85,7 +84,6 @@
     <ClInclude Include="Source\playScene.h">
       <Filter>PlayScene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\character.h" />
     <ClInclude Include="Source\isHit.h">
       <Filter>PlayScene</Filter>
     </ClInclude>

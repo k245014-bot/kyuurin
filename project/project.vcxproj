@@ -140,7 +140,6 @@
     <ClInclude Include="Library\sceneManager.h" />
     <ClInclude Include="Source\BootScene\bootScene.h" />
     <ClInclude Include="Source\Camera\camera.h" />
-    <ClInclude Include="Source\character.h" />
     <ClInclude Include="Source\Common\debugScreen.h" />
     <ClInclude Include="Source\Common\Effect\effect.h" />
     <ClInclude Include="Source\Common\Effect\effectManager.h" />
@@ -167,7 +166,6 @@
     <ClCompile Include="Library\sceneManager.cpp" />
     <ClCompile Include="Source\BootScene\bootScene.cpp" />
     <ClCompile Include="Source\Camera\camera.cpp" />
-    <ClCompile Include="Source\character.cpp" />
     <ClCompile Include="Source\Common\debugScreen.cpp" />
     <ClCompile Include="Source\Common\Effect\effect.cpp" />
     <ClCompile Include="Source\Common\Effect\effectManager.cpp" />

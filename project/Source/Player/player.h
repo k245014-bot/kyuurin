@@ -40,8 +40,8 @@ public:
 	~Player();
 	void Update() override;
 	void Draw() override;
-	VECTOR GetPosition() const { return position; }
-	bool IsDead() { return isDead; }
+
+	const bool GetIsDead() { return isDead; }
 
 	void StartPlay();
 

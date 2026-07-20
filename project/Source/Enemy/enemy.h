@@ -7,14 +7,14 @@ static const int XZ = 2;
 static const float SHOT_SPEED = 0.1f;
 static const float RUN_DEGREE = 30;
 static const int COOLTIME = 250;//エネミーの移動までの時間
-static const float HP_MAX = 150;//150
+static const int HP_MAX = 150;//150
 
 namespace
 {
-	static const float HP_BAR_X = 1024;
-	static const float HP_BAR_Y = 128;
+	static const int HP_BAR_X = 1024;
+	static const int HP_BAR_Y = 128;
 	static const int HP_BAR_SIZE = 834;
-	static const float HP_SIZE = 175;
+	static const int HP_SIZE = 175;
 
 	static const float HP_SPEED = 5.0f;
 }
@@ -33,28 +33,35 @@ public:
 	~Enemy();
 	void Update() override;
 	void Draw() override;
-	VECTOR GetPosition() const { return position; }
-	//float GetDirection() { return direction; }
-
-	void AddVelocity(VECTOR v);
 
 	void StartPlay();
 	void Damage(float _playerDamage);
 
 	void PlayerData(Player* _player);
 
-	bool IsDead() { return isDead; }
-
 	void HitLaser();
 
 	void StStop();
 
+	const bool GetIsDead() { return isDead; }
 private:
-	VECTOR velocity;
-	//float direction;
-	//Character* chara;
-	float rotx, rotz;
+	Player* player;
+	Floor* floor;
+	IsHit* isHit;//当たり判定
+	EffectManager* effect;
 
+	const VECTOR3 SpawnPos = VECTOR3(100.0f, 0, 200.0f);
+	const float AttackRange = 100.0f;
+	const float LaserAttack = 0.5f;
+	const float LastAttack = 0.1f;
+	const float ChargeMaxTime = 50.0f;
+	const float LaserMaxTime = 200.0f;
+
+	const int LaserEffTime = 200;
+	const int HitEffTime = 100;
+	const int PhaseEffTime = 100;
+	
+	const int LaserCoolTime = 350;
 	enum class STATE
 	{
 		ST_STOP,
@@ -71,19 +78,20 @@ private:
 	void DamageMove();
 	void RetGauge();//赤ゲージの削れる処理
 	
-	Player* player;
+
+	VECTOR velocity;
+	float rotx, rotz;
+
 	VECTOR playerPos;//プレイヤーのポジションコピー
 
 	bool isAtkMove;///攻撃するまでの移動をするか
-	IsHit* isHit;//当たり判定
+	
 
 	VECTOR destination;//移動先
 	bool destinationCheck;//移動先の決定をしてもいいか
 	int moveCounter[XZ];
 	VECTOR target;//行く方向
 	float targetDirection;//見る向き
-
-	Floor* floor;
 
 	ShotManager* shot;
 
@@ -97,7 +105,6 @@ private:
 
 	int damageCounter;//ダメージくらった後の光る処理のため
 
-	EffectManager* effect;
 
 	float retHp;//赤hp
 

@@ -80,21 +80,21 @@ void InputManager::KeyBoardMove()//updata
 	GetMousePoint(&mouseX, &mouseY);
 
 	//画面の中心から動いていた分だけマウスが移動したことになる。
-	mouseMoveX = mouseX - mouseCopy.x;
-	mouseMoveY = mouseY - mouseCopy.y;
+	mouseMoveX = mouseX - (int)mouseCopy.x;
+	mouseMoveY = mouseY - (int)mouseCopy.y;
 
 	// マウスポインタの位置を画面中央に設定する
-	if (mouseX <= min.x || mouseX >= max.x || mouseY <= min.y || mouseY >= max.y)
+	if (mouseX <= (int)min.x || mouseX >= (int)max.x || mouseY <= (int)min.y || mouseY >= (int)max.y)
 	{
 		SetMousePoint(MOUSE_OFFSET_X, MOUSE_OFFSET_Y);
 		mouseCopy = VECTOR2(MOUSE_OFFSET_X, MOUSE_OFFSET_Y);
 	}
 	else
-		mouseCopy = VECTOR2(mouseX, mouseY);
+		mouseCopy = VECTOR2((float)mouseX, (float)mouseY);
 
 	//マウスの移動量を格納する。そのまま入れるとハイセンシ(感度が良）すぎるので割った数値を入れる
-	isKey.sickRX = mouseMoveX / restraint;
-	isKey.sickRY = mouseMoveY / restraint;
+	isKey.sickRX = (float)mouseMoveX / restraint;
+	isKey.sickRY = (float)mouseMoveY / restraint;
 
 	//攻撃ボタン
 	if ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0 && !isCheckkey)

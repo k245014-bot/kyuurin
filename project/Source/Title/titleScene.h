@@ -1,5 +1,6 @@
 #pragma once
 #include "../../Library/sceneBase.h"
+//#include "../config.h"
 
 /// <summary>
 /// タイトルシーン

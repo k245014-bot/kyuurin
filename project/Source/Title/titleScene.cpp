@@ -21,9 +21,10 @@ TitleScene::TitleScene():
 	
 	kyu = LoadGraph("data\\sourceimages\\b_10.png");
 
-	kyuPos = 900;
+	kyuPos = SCREEN_WIDTH - 300;
 	rinPos = 20;
 	counter = 0;
+	cCounter = 0;
 }
 
 TitleScene::~TitleScene()
@@ -42,7 +43,7 @@ void TitleScene::Update()
 
 	if (!pushed)
 	{
-		if (CheckHitKey(KEY_INPUT_P) || key.Buttons[XINPUT_BUTTON_B])
+		if (CheckHitKey(KEY_INPUT_P) || GetMouseInput() & MOUSE_INPUT_LEFT || key.Buttons[XINPUT_BUTTON_B])
 		{
 			pushed = true;
 			counter = 0;
@@ -61,7 +62,7 @@ void TitleScene::Update()
 	{
 		kyuPos -= 10;
 		rinPos += 10;
-		if (1000 <= rinPos)
+		if (SCREEN_WIDTH - 300 <= rinPos)
 			cCounter = 1;
 	}
 	else
@@ -77,16 +78,15 @@ void TitleScene::Draw()
 {
 	SceneBase::Draw();
 
-	//DrawGraph(136, 20, hLogo, TRUE);SCREEN_WIDTH
 	DrawGraph(0, 0, hBG, TRUE);
 
-	DrawGraph(kyuPos, 200, rin, TRUE);//950
+	DrawGraph(kyuPos, 200, rin, TRUE);
 	DrawGraph(rinPos, 200, kyu, TRUE);
-	DrawGraph(SCREEN_WIDTH / 5 + 50,SCREEN_HEIGHT / 5 + 100, hLogo, TRUE);
+	DrawGraph(SCREEN_WIDTH / 3 + 50,SCREEN_HEIGHT / 5 + 100, hLogo, TRUE);
 
 	if (!pushed)
 	{
 		if (counter % 60 < 40)
-			DrawString(SCREEN_WIDTH / 2.5, SCREEN_HEIGHT /1.5 , "Push B To Start", GetColor(255, 255, 255));
+			DrawString(SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT /1.5 , "Push B To Start", GetColor(255, 255, 255));
 	}
 }

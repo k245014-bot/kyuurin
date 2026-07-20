@@ -3,27 +3,26 @@
 #include "../objData.h"
 #include "../ObjectBase/CharaBase.h"
 
-static const float JUMP_SPEED = 20.0f/*1.5f*/;
-static const float JUMP_GRAVITY = 0.75f/*0.075f*/;
-static const float BOOST_SPEED = 25.0f;
-static const float ANGULAR_SPEED = 0.1f;//攻撃の角度変える速度
-static const float ATK_RANGE = 125;//範囲
-static const float PLAYER_DAMAGE = 10;//10
-static const int PLAYER_HP_MAX = 50;
-static const float PLAYER_SPEED = 10;
-static const int HIT_STOOP = 15;//20
+ const float JUMP_SPEED = 20.0f;
+ const float JUMP_GRAVITY = 0.75f;
+ const float BOOST_SPEED = 25.0f;
+ const float ANGULAR_SPEED = 0.1f;//攻撃の角度変える速度
+ const float ATK_RANGE = 125;//範囲
+ const float PLAYER_DAMAGE = 10;
+ const int PLAYER_HP_MAX = 50;
+ const float PLAYER_SPEED = 10;
+ const int HIT_STOOP = 15;
 
-static const float VZERO = 10.0f;
-static const float THETA = 30.0f;
-static const float GRAVITY = 9.8f;
+const float THETA = 30.0f;
+const float GRAVITY = 9.8f;
 
 namespace
 {
-	static const float PHP_BAR_SIZE_X = 512;//ゲージ
-	static const float PHP_BAR_SIZE_Y = 256 / 4;//ゲージ
-	static const int PHP_BAR_SIZE = 834 / 2;
-	static const float PHP_SIZE = 175 / 2;
-	static const float PHP_SPEED = 3.0f;//赤ゲージの削れる速度
+	 const float PHP_BAR_SIZE_X = 512;//ゲージ
+	 const float PHP_BAR_SIZE_Y = 256 / 4;//ゲージ
+	 const int PHP_BAR_SIZE = 834 / 2;
+	 const float PHP_SIZE = 175 / 2;
+	 const float PHP_SPEED = 3.0f;//赤ゲージの削れる速度
 }
 
 //class Character;
@@ -34,7 +33,7 @@ class EffectManager;
 class InputManager;
 class Camera;
 
-class Player : public CharaBase/*public GameObject*/
+class Player : public CharaBase
 {
 public:
 	Player(SceneBase* _scene);
@@ -61,6 +60,16 @@ private:
 	Camera* camera;
 	Floor* floor;
 
+	const VECTOR3 SpawnPos = VECTOR3(-100.0f, 0, -200.0f);
+	//キャラクターを滑るように見せるための数値
+	const float Deceleration = 0.9f;
+	const float PlayerMoveSpeed = 2.0f;
+	const float AngleOffset = DX_PI_F * 0.5f;
+	const float InputOffset = DX_PI_F * 1.5f;
+	const float AngleAtkMax = ANGULAR_SPEED * 10;
+	const float AtkPlayerSpeed = PLAYER_SPEED * 0.7f;
+	const float DamageMoveSpeed = PLAYER_SPEED / 5;
+
 	enum class STATE 
 	{
 		ST_STOP,
@@ -72,10 +81,7 @@ private:
 	};
 	STATE state;
 
-	/*VECTOR position;*/
 	VECTOR3 velocity;
-	//float direction;
-	//Character* chara;
 	float rotx, rotz;
 
 	void UpdatePlay();	
@@ -92,8 +98,6 @@ private:
 
 	VECTOR velocityCopy;
 
-	//bool keyCheck;//長押し防止
-
 	float turnDirection;//攻撃時の回転
 	int turnIndex;
 
@@ -108,7 +112,7 @@ private:
 
 	VECTOR copyPos;
 
-	float retHp;//赤HPのやつ
+	float retHp;//赤HP
 
 	Vector2 hitPos; //hpの揺れ
 

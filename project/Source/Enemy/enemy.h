@@ -1,6 +1,6 @@
 #pragma once
-#include "../../Library/gameObject.h"
 #include "../objData.h"
+#include "../ObjectBase/CharaBase.h"
 
 static const float ENEMY_SPEED = 0.8f;//0.2
 static const int XZ = 2;
@@ -26,7 +26,7 @@ class Floor;
 class ShotManager;
 class EffectManager;
 
-class Enemy : public GameObject
+class Enemy : public CharaBase
 {
 public:
 	Enemy(SceneBase* _scene);
@@ -34,7 +34,7 @@ public:
 	void Update() override;
 	void Draw() override;
 	VECTOR GetPosition() const { return position; }
-	float GetDirection() { return direction; }
+	//float GetDirection() { return direction; }
 
 	void AddVelocity(VECTOR v);
 
@@ -50,10 +50,9 @@ public:
 	void StStop();
 
 private:
-	VECTOR position;
 	VECTOR velocity;
-	float direction;
-	Character* chara;
+	//float direction;
+	//Character* chara;
 	float rotx, rotz;
 
 	enum class STATE

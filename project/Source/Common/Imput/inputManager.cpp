@@ -50,6 +50,11 @@ void InputManager::ControllerMove()
 		isKey.isAtk = CheckKey();
 	else
 		isKey.isAtk = KeyCoolTime();
+
+	if (controller.Buttons[XINPUT_BUTTON_A] && !isCheckkey)
+		isKey.isJump = CheckKey();
+	else
+		isKey.isJump = KeyCoolTime();
 }
 
 void InputManager::KeyBoardMove()//updata
@@ -96,7 +101,7 @@ void InputManager::KeyBoardMove()//updata
 		isKey.isAtk = CheckKey();
 	else
 		isKey.isAtk = KeyCoolTime();
-
+	//ジャンプボタン
 	if(CheckHitKey(KEY_INPUT_SPACE))
 		isKey.isJump = CheckKey();
 	else

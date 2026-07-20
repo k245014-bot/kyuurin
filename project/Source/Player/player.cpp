@@ -18,31 +18,36 @@ Player::Player(SceneBase* _scene) : CharaBase(_scene)
 	floor = GetScene()->FindGameObject<Floor>();
 	input = GetScene()->FindGameObject<InputManager>();
 	camera = GetScene()->FindGameObject <Camera>();
+	effect = SceneManager::CommonScene()->FindGameObject<EffectManager>();
 
 	SetModel("red");
 
-	position = VGet(-100.0f, 0, -200.0f);
-	velocity = VGet(0,0,0);
+	atkSound = LoadSoundMem("data\\sound\\atkSE_Player.wav");
+	//hitSound = LoadSoundMem("data\\sound\\atkSE_Enemy.wav");
+	hitSound = LoadSoundMem("data\\sound\\hithead.wav");
+	jumpSound = LoadSoundMem("data\\sound\\jumpSound.wav");
+	boostSound = LoadSoundMem("data\\sound\\boostSound.wav");
+	ChangeVolumeSoundMem(200, boostSound);
+
+	hpBar.image = LoadGraph("data\\texture\\HPBar_player.png");
+	hpBar.pos = V2Get(0, SCREEN_HEIGHT - PHP_BAR_SIZE_Y);
+
+	state = STATE::ST_STOP;
+
+	position = SpawnPos;
+	velocity = VZero;
 	
 	rotx = 0;
 	rotz = 0;
 
-	rotation = VZero;
-
-	hitSound = LoadSoundMem("data\\sound\\hithead.wav");
-	state = STATE::ST_STOP;
-
 	isBoost = false;
 	boostCounter = 0;
-	velocityCopy = VGet(0, 0, 0);
+	velocityCopy = VZero;
 
 	turnDirection = 0;
 	turnIndex = 0;
 
 	myHp = PLAYER_HP_MAX;
-
-	hpBar.image = LoadGraph("data\\texture\\HPBar_player.png");
-	hpBar.pos = V2Get(0, SCREEN_HEIGHT- PHP_BAR_SIZE_Y);
 
 	isDead = false;
 	isDamage = false;
@@ -50,17 +55,10 @@ Player::Player(SceneBase* _scene) : CharaBase(_scene)
 	hitCounter = 0;
 	isAtkDamage = false;
 
-	effect = SceneManager::CommonScene()->FindGameObject<EffectManager>();
-	copyPos = VGet(0, 0, 0);
+	copyPos = VZero;
 
 	retHp = PHP_SIZE + PHP_BAR_SIZE;
 	hitPos = V2Get(0, 0);
-
-	atkSound = LoadSoundMem("data\\sound\\atkSE_Player.wav");
-	hitSound = LoadSoundMem("data\\sound\\atkSE_Enemy.wav");
-	jumpSound = LoadSoundMem("data\\sound\\jumpSound.wav");
-	boostSound = LoadSoundMem("data\\sound\\boostSound.wav");
-	ChangeVolumeSoundMem(200, boostSound);
 
 	turnCounter = 0;
 	targetDirection = 0;
@@ -102,6 +100,7 @@ void Player::Update()
 	};
 
 	RetGauge();
+	position = floor->SetPlayerPos(position);
 }
 
 void Player::Draw()
@@ -117,7 +116,7 @@ void Player::Draw()
 void Player::UpdatePlay()
 {
 	// すべる床での移動
-	velocity = VScale(velocity, 0.9f);
+	velocity *= Deceleration;/*VScale(velocity, 0.9f)*/;
 
 	//ジャンプの処理
 	if (input->GetKeyPush().isJump)
@@ -137,10 +136,10 @@ void Player::UpdatePlay()
 	//キャラの移動の処理
 	if (input->GetKeyPush().sickLX != 0 || input->GetKeyPush().sickLY != 0)
 	{
-		float keyVec = atan2f(input->GetKeyPush().sickLY, input->GetKeyPush().sickLX);
-		velocity += CalcMoveVector(camera->GetRotation().y - keyVec + DX_PI_F * 0.5, 0.2f * PLAYER_SPEED);
+		const float keyVec = atan2f(input->GetKeyPush().sickLY, input->GetKeyPush().sickLX);
+		velocity += CalcMoveVector(camera->GetRotation().y - keyVec + AngleOffset, PlayerMoveSpeed);
 
-		goalRotY = camera->GetRotation().y - keyVec + DX_PI_F * 0.5;
+		goalRotY = camera->GetRotation().y - keyVec + AngleOffset;
 		LookAt();
 		RunAnim(10.0f);
 	}
@@ -148,7 +147,7 @@ void Player::UpdatePlay()
 		RunStopAnim();
 
 	position += velocity;
-	position = floor->SetPlayerPos(position);
+	/*position = floor->SetPlayerPos(position);*/
 
 	CharaBase::Update();
 }
@@ -160,10 +159,7 @@ void Player::JumpMove()
 	//地面に着地した時
 	if (position.y < 0)
 	{
-		velocity.y = 0;
-		velocity.x = velocity.x / 2;
-		velocity.z = velocity.z / 2;
-
+		velocity = VECTOR3(velocity.x / 2, 0, velocity.z / 2);
 		position.y = 0;
 		isBoost = false;//
 		state = STATE::ST_PLAY;
@@ -171,15 +167,16 @@ void Player::JumpMove()
 
 	if (isBoost)
 	{
-		float inputDirection = atan2(_boost.z, _boost.x) + (DX_PI_F * 1.5);
+		const float InputDirection = atan2(_boost.z, _boost.x) + InputOffset;
 
 		if (boostCounter == 0)
 		{
-			velocity += CalcMoveVector(camera->GetRotation().y - inputDirection, BOOST_SPEED);
+			velocity += CalcMoveVector(camera->GetRotation().y - InputDirection, BOOST_SPEED);
 		}
 		else
 		{
-			velocity += CalcMoveVector(camera->GetRotation().y - inputDirection, 0.1);
+			const float _Speed = 0.1f;
+			velocity += CalcMoveVector(camera->GetRotation().y - InputDirection, _Speed);
 			if (boostCounter >= BOOST_SPEED)
 			{
 				isBoost = false;//
@@ -224,7 +221,7 @@ void Player::JumpMove()
 	}
 	
 	position += velocity;
-	position = floor->SetPlayerPos(position);
+	//position = floor->SetPlayerPos(position);
 }
 
 void Player::Atk()
@@ -232,10 +229,10 @@ void Player::Atk()
 	Reset();
 	switch (turnIndex)
 	{
-	case 0:
+	case 0://予備動作
 		turnDirection += ANGULAR_SPEED;
-		velocity = VScale(velocity, 0.5);
-		if (turnDirection >= ANGULAR_SPEED * 10 + copyRotY)
+		velocity *= 0.5f;
+		if (turnDirection >= AngleAtkMax + copyRotY)
 			turnIndex = 1;
 		break;
 	case 1:
@@ -248,13 +245,12 @@ void Player::Atk()
 			VECTOR target = VSub(enemyPos, position);
 			targetDirection = atan2(target.x, target.z) + DX_PI_F / 180;
 
-			velocity.x += sinf(targetDirection) * PLAYER_SPEED * 0.7f;
-			velocity.z += cosf(targetDirection) * PLAYER_SPEED * 0.7f;
+			velocity += CalcMoveVector(targetDirection, AtkPlayerSpeed);
 
 			isAtkDamage = true;
 		}
 		
-		if (turnDirection <= ANGULAR_SPEED * -10 + copyRotY)
+		if (turnDirection <= -AngleAtkMax + copyRotY)
 		{	
 			if (isAtkDamage)
 			{
@@ -272,7 +268,7 @@ void Player::Atk()
 				turnIndex = 2;
 		}
 		break;
-	case 2:
+	case 2://元に戻る処理
 		turnDirection += ANGULAR_SPEED;
 		if (turnDirection >= copyRotY)
 		{
@@ -281,11 +277,11 @@ void Player::Atk()
 			turnIndex = 0;
 		}
 		break;
-	case 3:
+	case 3://敵にダメージが通った時
 		if(turnCounter == 0)
 			velocityCopy = velocity;
 
-		velocity = VGet(0, 0, 0);
+		velocity = VZero;
 		turnCounter++;
 		if (turnCounter >= 20)
 		{
@@ -296,9 +292,8 @@ void Player::Atk()
 			
 	}
 
-	position = VAdd(position, velocity);
+	position += velocity;
 	rotation = VECTOR3(0, turnDirection, 0);
-	position = floor->SetPlayerPos(position);
 }
 
 void Player::Damage(int _damage)
@@ -345,9 +340,7 @@ void Player::DamageMove()
 	}
 	else if (hitCounter <= HIT_STOOP)
 	{
-		velocity.z += cosf(enemy->GetDirection()) * PLAYER_SPEED / 5;
-		velocity.x += sinf(enemy->GetDirection()) * PLAYER_SPEED / 5;
-		//hitPos = V2Get(0, 0);
+		velocity += CalcMoveVector(enemy->GetRotation().y, DamageMoveSpeed);
 	}
 	else if (hitCounter <= 40)
 	{
@@ -365,8 +358,7 @@ void Player::DamageMove()
 		effect->SetPos(copyPos, 0);
 	}
 
-	position = VAdd(position, velocity);
-	position = floor->SetPlayerPos(position);
+	position += velocity;
 }
 
 void Player::LaserDamage()
@@ -379,16 +371,16 @@ void Player::LaserDamage()
 		if (hitCounter == 1)
 		{
 			myHp -= 5;
-			velocity.x = VZERO * cosf(THETA * DX_PI_F / 180) * sinf(enemy->GetDirection());
-			velocity.y = VZERO * sinf(THETA * DX_PI_F / 180);
-			velocity.z = VZERO * sin(THETA * DX_PI_F / 180) * cos(enemy->GetDirection());
+			velocity.x = 10 * cosf(THETA * DX_PI_F / 180) * sinf(enemy->GetRotation().y);
+			velocity.y = 10 * sinf(THETA * DX_PI_F / 180);
+			velocity.z = 10 * sin(THETA * DX_PI_F / 180) * cos(enemy->GetRotation().y);
 			rotx = 0;
-			rotx -= 0.5f * DX_PI_F / (120 * VZERO * sin(THETA * DX_PI_F / 180) / GRAVITY);
+			rotx -= 0.5f * DX_PI_F / (120 * 10 * sin(THETA * DX_PI_F / 180) / GRAVITY);
 		}
-		else if (hitCounter <= 120 * VZERO * sinf(THETA * DX_PI_F / 180) / GRAVITY)
+		else if (hitCounter <= 120 * 10 * sinf(THETA * DX_PI_F / 180) / GRAVITY)
 		{
 			velocity.y -= GRAVITY / 60;
-			rotx -= 0.5f * DX_PI_F / (120 * VZERO * sinf(THETA * DX_PI_F / 180) / GRAVITY);
+			rotx -= 0.5f * DX_PI_F / (120 * 10 * sinf(THETA * DX_PI_F / 180) / GRAVITY);
 		}
 		else
 		{
@@ -399,7 +391,7 @@ void Player::LaserDamage()
 			velocity = VGet(0, 0, 0);
 		}
 		
-		if (hitCounter >= 120 * VZERO * sinf(THETA * DX_PI_F / 180) / GRAVITY + 20)
+		if (hitCounter >= 120 * 10 * sinf(THETA * DX_PI_F / 180) / GRAVITY + 20)
 		{
 			velocity = VGet(0, 0, 0);
 			rotx = 0;
@@ -418,13 +410,12 @@ void Player::LaserDamage()
 			velocity = VGet(0, 0, 0);
 			position.y = 0;
 		}
-		velocity.z += cosf(enemy->GetDirection()) * PLAYER_SPEED / 5;
-		velocity.x += sinf(enemy->GetDirection()) * PLAYER_SPEED / 5;
+		velocity.z += cosf(enemy->GetRotation().y) * PLAYER_SPEED / 5;
+		velocity.x += sinf(enemy->GetRotation().y) * PLAYER_SPEED / 5;
 	}
 
-	position = VAdd(position, velocity);
+	position += velocity;
 	rotation = VECTOR3(rotx, rotation.y, 0);
-	position = floor->SetPlayerPos(position);
 }
 
 void Player::HitLaser()

@@ -9,29 +9,19 @@
 #include "../Common/Effect/effectManager.h"
 #include <assert.h>
 
-Enemy::Enemy(SceneBase * _scene) : GameObject(_scene)
+Enemy::Enemy(SceneBase * _scene) : CharaBase(_scene)
 {
-	chara = new Character();
 	floor = GetScene()->FindGameObject<Floor>();
 	isHit = new IsHit();
-
-	chara->SetModel(Character::MODEL_ID::MODEL_BODY, MV1LoadModel("data\\model\\pg_blue_body.mv1"));
-	chara->SetModel(Character::MODEL_ID::MODEL_HEAD, MV1LoadModel("data\\model\\pg_blue_head.mv1"));
-	chara->SetModel(Character::MODEL_ID::MODEL_RHAND, MV1LoadModel("data\\model\\pg_blue_right_hand.mv1"));
-	chara->SetModel(Character::MODEL_ID::MODEL_LHAND, MV1LoadModel("data\\model\\pg_blue_left_hand.mv1"));
-	chara->SetModel(Character::MODEL_ID::MODEL_RFOOT, MV1LoadModel("data\\model\\pg_blue_right_foot.mv1"));
-	chara->SetModel(Character::MODEL_ID::MODEL_LFOOT, MV1LoadModel("data\\model\\pg_blue_left_foot.mv1"));
-
+	SetModel("blue");
+	
 	position = VGet(100.0f, 0, 200.0f);
 	velocity = VGet(0, 0, 0);
-	direction = DX_PI_F;
-	
+	/*direction = DX_PI_F;*/
+	rotation.y = DX_PI_F;
 	rotx = 0;		
 	rotz = 0;		
 	
-	chara->SetPosition(position);
-	chara->SetRotation(VGet(0, direction, 0));
-
 	state = STATE::ST_STOP;	
 
 	isAtkMove = false;
@@ -67,7 +57,7 @@ Enemy::Enemy(SceneBase * _scene) : GameObject(_scene)
 
 Enemy::~Enemy()
 {
-	delete chara;
+	//delete chara;
 }
 
 void Enemy::Update()
@@ -114,9 +104,9 @@ void Enemy::EnemyMove()
 	target = VSub(destination, position);
 	targetDirection = atan2(target.x, target.z);
 
-	direction = targetDirection + DX_PI_F / 180;
-	velocity.x += sinf(direction) * ENEMY_SPEED;
-	velocity.z += cosf(direction) * ENEMY_SPEED;
+	rotation.y = targetDirection + DX_PI_F / 180;
+	velocity.x += sinf(rotation.y) * ENEMY_SPEED;
+	velocity.z += cosf(rotation.y) * ENEMY_SPEED;
 
 	if (isHit->_IsHit(position, destination, 100))
 	{
@@ -126,8 +116,8 @@ void Enemy::EnemyMove()
 		velocity.x = 0;
 		velocity.z = 0;
 	}
-	chara->SetPosition(position);
-	chara->SetRotation(VGet(DX_PI_F * RUN_DEGREE / 180, direction, 0.0f));
+	/*chara->SetPosition(position);
+	chara->SetRotation(VGet(DX_PI_F * RUN_DEGREE / 180, direction, 0.0f));*/
 }
 
 void Enemy::EnemyShot()
@@ -137,13 +127,13 @@ void Enemy::EnemyShot()
 		target = VSub(player->GetPosition(), position);
 		targetDirection = atan2(target.x, target.z);
 
-		direction = targetDirection + DX_PI_F / 180;
+		rotation.y = targetDirection + DX_PI_F / 180;
 		
 		if (myHp / HP_MAX >= 0.5)
 		{
 			coolTime = COOLTIME;
 			shot = GetScene()->FindGameObject<ShotManager>();
-			shot->CreateShot(position, VGet(SHOT_SPEED, 0, SHOT_SPEED), direction);
+			shot->CreateShot(position, VGet(SHOT_SPEED, 0, SHOT_SPEED), rotation.y);
 			PlaySoundMem(atkSound, DX_PLAYTYPE_BACK);
 		}
 		else if(myHp / HP_MAX >= 0.1)
@@ -173,7 +163,7 @@ void Enemy::EnemyShot()
 				target = VSub(player->GetPosition(), position);
 				targetDirection = atan2(target.x, target.z);
 
-				direction = targetDirection + DX_PI_F / 180;
+				rotation.y = targetDirection + DX_PI_F / 180;
 				effect->SetRot(VGet(0, targetDirection + 0.5 * DX_PI_F, DX_PI_F * 0.5), 2);//プレイヤー追尾
 				if (chageCounter ==0 )
 				{
@@ -197,10 +187,10 @@ void Enemy::EnemyShot()
 			if (coolTimeCounter % 2 == 0)
 			{
 				shot = GetScene()->FindGameObject<ShotManager>();
-				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, 0, SHOT_SPEED / 100 * coolTimeCounter), direction + DX_PI_F / 70 * (coolTimeCounter - 45));
-				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, 0, SHOT_SPEED / 100 * coolTimeCounter), direction - DX_PI_F / 70 * (coolTimeCounter - 45));
-				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, abs(cos(DX_PI_F / 40 * coolTimeCounter)) * SHOT_SPEED / 2 * coolTimeCounter , SHOT_SPEED / 100 * coolTimeCounter), direction + DX_PI_F / 140 * (coolTimeCounter + 45));
-				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, abs(cos(DX_PI_F / 40 * coolTimeCounter)) * SHOT_SPEED / 2 * coolTimeCounter , SHOT_SPEED / 100 * coolTimeCounter), direction - DX_PI_F / 140 * (coolTimeCounter + 45));
+				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, 0, SHOT_SPEED / 100 * coolTimeCounter), rotation.y + DX_PI_F / 70 * (coolTimeCounter - 45));
+				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, 0, SHOT_SPEED / 100 * coolTimeCounter), rotation.y - DX_PI_F / 70 * (coolTimeCounter - 45));
+				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, abs(cos(DX_PI_F / 40 * coolTimeCounter)) * SHOT_SPEED / 2 * coolTimeCounter , SHOT_SPEED / 100 * coolTimeCounter), rotation.y + DX_PI_F / 140 * (coolTimeCounter + 45));
+				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, abs(cos(DX_PI_F / 40 * coolTimeCounter)) * SHOT_SPEED / 2 * coolTimeCounter , SHOT_SPEED / 100 * coolTimeCounter), rotation.y - DX_PI_F / 140 * (coolTimeCounter + 45));
 				//お遊び
 				//shot = GetScene()->FindGameObject<ShotManager>();
 				//shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, 0, SHOT_SPEED / 100 * coolTimeCounter), direction + DX_PI_F / 50 * (coolTimeCounter));
@@ -214,7 +204,7 @@ void Enemy::EnemyShot()
 				target = VSub(player->GetPosition(), position);
 				targetDirection = atan2(target.x, target.z);
 
-				direction = targetDirection + DX_PI_F / 180;
+				rotation.y = targetDirection + DX_PI_F / 180;
 				effect->SetRot(VGet(0, targetDirection + 0.5 * DX_PI_F, DX_PI_F * 0.5), 2);/////////
 				if (chageCounter == 0)
 				{
@@ -249,8 +239,8 @@ void Enemy::EnemyShot()
 		coolTimeCounter = 0;
 	}
 	
-	chara->SetPosition(position);
-	chara->SetRotation(VGet(0.0f, direction, 0.0f));
+	/*chara->SetPosition(position);
+	chara->SetRotation(VGet(0.0f, direction, 0.0f));*/
 }
 
 void Enemy::Damage(float _playerDamage)
@@ -273,24 +263,26 @@ void Enemy::DamageMove()
 	damageCounter++;
 	if (damageCounter == 1)
 	{
-		chara->SetRotation(VGet(DX_PI_F * -0.25, player->GetRotation().y + DX_PI_F, 0.0f));
+		/*chara->SetRotation(VGet(DX_PI_F * -0.25, player->GetRotation().y + DX_PI_F, 0.0f));
 
 		chara->HitCharacter(Character::MODEL_ID::MODEL_HEAD, 2, true);///
 		chara->HitCharacter(Character::MODEL_ID::MODEL_BODY, 2, true);///
 		chara->HitCharacter(Character::MODEL_ID::MODEL_RHAND, 1, true);///
 		chara->HitCharacter(Character::MODEL_ID::MODEL_LHAND, 1, true);///
 		chara->HitCharacter(Character::MODEL_ID::MODEL_RFOOT, 1, true);///
-		chara->HitCharacter(Character::MODEL_ID::MODEL_LFOOT, 1, true);///
+		chara->HitCharacter(Character::MODEL_ID::MODEL_LFOOT, 1, true);///*/
+
+		AllHitCharacter(true);
 	}
 	else if (damageCounter >= 20)
 	{
-		chara->HitCharacter(Character::MODEL_ID::MODEL_HEAD, 2, false);///
+		/*chara->HitCharacter(Character::MODEL_ID::MODEL_HEAD, 2, false);///
 		chara->HitCharacter(Character::MODEL_ID::MODEL_BODY, 2, false);///
 		chara->HitCharacter(Character::MODEL_ID::MODEL_RHAND, 1, false);///
 		chara->HitCharacter(Character::MODEL_ID::MODEL_LHAND, 1, false);///
 		chara->HitCharacter(Character::MODEL_ID::MODEL_RFOOT, 1, false);///
-		chara->HitCharacter(Character::MODEL_ID::MODEL_LFOOT, 1, false);///
-
+		chara->HitCharacter(Character::MODEL_ID::MODEL_LFOOT, 1, false);///*/
+		AllHitCharacter(false);
 		destinationCheck = true;//////
 		velocity = VGet(0, 0, 0);///
 
@@ -341,7 +333,7 @@ void Enemy::StartPlay()
 void Enemy::Draw()
 {
 	if (!isDead)
-		chara->Draw();
+		CharaBase::Draw();
 
 	DrawRectGraph(hpBar.pos.x, hpBar.pos.y, 0, 0, HP_BAR_X, HP_BAR_Y, hpBar.image, true);//フレーム
 	DrawRectGraph(hpBar.pos.x, hpBar.pos.y, 0, HP_BAR_Y * 3, retHp, HP_BAR_Y, hpBar.image, true);//赤ゲージ
@@ -366,7 +358,7 @@ void Enemy::HitLaser()
 
 	while (true)
 	{
-		VECTOR lc = VGet(position.x + sinf(direction) * index, 0, position.z + cosf(direction) * index);
+		VECTOR lc = VGet(position.x + sinf(rotation.y) * index, 0, position.z + cosf(rotation.y) * index);
 		if (VSize(VSub(lc, pPos)) <= distance)
 		{
 			index++;

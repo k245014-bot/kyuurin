@@ -18,7 +18,7 @@ InputManager::InputManager(SceneBase* scene) : GameObject(scene)
 
 	min = VECTOR2(0, 0);
 	max = VECTOR2(MOUSE_OFFSET_X * 2 - 1, MOUSE_OFFSET_Y * 2);
-	//SetMouseDispFlag(FALSE);
+	SetMouseDispFlag(FALSE);
 }
 
 InputManager::~InputManager()

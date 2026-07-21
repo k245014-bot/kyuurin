@@ -87,6 +87,6 @@ void TitleScene::Draw()
 	if (!pushed)
 	{
 		if (counter % 60 < 40)
-			DrawString(SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT /1.5 , "Push B To Start", GetColor(255, 255, 255));
+			DrawString(SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 1.5f , "Push B To Start", GetColor(255, 255, 255));
 	}
 }

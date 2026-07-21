@@ -22,13 +22,13 @@ Player::Player(SceneBase* _scene) : CharaBase(_scene)
 	SetModel("red");
 
 	atkSound = LoadSoundMem("data\\sound\\atkSE_Player.wav");
-	hitSound = LoadSoundMem("data\\sound\\hithead.wav");
+	hitSound = LoadSoundMem("data\\sound\\atkSE_Enemy.wav");
 	jumpSound = LoadSoundMem("data\\sound\\jumpSound.wav");
 	boostSound = LoadSoundMem("data\\sound\\boostSound.wav");
 	ChangeVolumeSoundMem(200, boostSound);
 
 	hpBar.image = LoadGraph("data\\texture\\HPBar_player.png");
-	hpBar.pos = V2Get(0, SCREEN_HEIGHT - PHP_BAR_SIZE_Y);
+	hpBar.pos = V2Get(0, SCREEN_HEIGHT - HpBarSizeY);
 
 	state = STATE::ST_STOP;
 
@@ -45,7 +45,7 @@ Player::Player(SceneBase* _scene) : CharaBase(_scene)
 	turnDirection = 0;
 	turnIndex = 0;
 
-	myHp = PLAYER_HP_MAX;
+	myHp = (float)playerHpMax;
 
 	isDead = false;
 	isDamage = false;
@@ -55,7 +55,7 @@ Player::Player(SceneBase* _scene) : CharaBase(_scene)
 
 	copyPos = VZero;
 
-	retHp = PHP_SIZE + PHP_BAR_SIZE;
+	retHp = HpSize + HpBarSize;
 	hitPos = V2Get(0, 0);
 
 	turnCounter = 0;
@@ -106,21 +106,21 @@ void Player::Draw()
 	if (!isDead)
 		CharaBase::Draw();
 
-	DrawRectGraph(hpBar.pos.x, hpBar.pos.y, 0, 0, HP_BAR_X, PHP_BAR_SIZE_Y, hpBar.image, true);//フレーム
-	DrawRectGraph(hpBar.pos.x + hitPos.x, hpBar.pos.y + hitPos.y, 0, PHP_BAR_SIZE_Y * 3, retHp, PHP_BAR_SIZE_Y, hpBar.image, true);//赤ゲージ
-	DrawRectGraph(hpBar.pos.x + hitPos.x, hpBar.pos.y + hitPos.y, 0, PHP_BAR_SIZE_Y * hpState, PHP_SIZE + PHP_BAR_SIZE * myHp / PLAYER_HP_MAX, PHP_BAR_SIZE_Y, hpBar.image, true);//hp
+	DrawRectGraph((int)hpBar.pos.x, (int)hpBar.pos.y, 0, 0, (int)HpBarSizeX, (int)HpBarSizeY, hpBar.image, true);//フレーム
+	DrawRectGraph((int)hpBar.pos.x + (int)hitPos.x, (int)hpBar.pos.y + (int)hitPos.y, 0, (int)HpBarSizeY * 3, (int)retHp, (int)HpBarSizeY, hpBar.image, true);//赤ゲージ
+	DrawRectGraph((int)hpBar.pos.x + (int)hitPos.x, (int)hpBar.pos.y + (int)hitPos.y, 0, (int)HpBarSizeY * (int)hpState, (int)HpSize + HpBarSize * (int)myHp / playerHpMax, (int)HpBarSizeY, hpBar.image, true);//hp
 }
 
 void Player::UpdatePlay()
 {
 	// すべる床での移動
-	velocity *= Deceleration;/*VScale(velocity, 0.9f)*/;
+	velocity *= Deceleration;
 
 	//ジャンプの処理
 	if (input->GetKeyPush().isJump)
 	{
 		velocity = velocity / 2;
-		velocity.y = JUMP_SPEED;
+		velocity.y = JumpSpeed;
 		state = STATE::ST_JUMP;
 		PlaySoundMem(jumpSound, DX_PLAYTYPE_BACK);
 	}
@@ -153,7 +153,7 @@ void Player::UpdatePlay()
 void Player::JumpMove()
 {
 	Reset();
-	velocity.y -= JUMP_GRAVITY;
+	velocity.y -= JumpGravity;
 	//地面に着地した時
 	if (position.y < 0)
 	{
@@ -165,17 +165,17 @@ void Player::JumpMove()
 
 	if (isBoost)
 	{
-		const float InputDirection = atan2(_boost.z, _boost.x) + InputOffset;
+		const float InputDirection = atan2f(_boost.z, _boost.x) + InputOffset;
 
 		if (boostCounter == 0)
 		{
-			velocity += CalcMoveVector(camera->GetRotation().y - InputDirection, BOOST_SPEED);
+			velocity += CalcMoveVector(camera->GetRotation().y - InputDirection, BoostSpeed);
 		}
 		else
 		{
 			const float _Speed = 0.1f;
 			velocity += CalcMoveVector(camera->GetRotation().y - InputDirection, _Speed);
-			if (boostCounter >= BOOST_SPEED)
+			if (boostCounter >= BoostSpeed)
 			{
 				isBoost = false;//
 				boostCounter = 0;
@@ -228,20 +228,20 @@ void Player::Atk()
 	switch (turnIndex)
 	{
 	case 0://予備動作
-		turnDirection += ANGULAR_SPEED;
+		turnDirection += AngularSpeed;
 		velocity *= 0.5f;
 		if (turnDirection >= AngleAtkMax + copyRotY)
 			turnIndex = 1;
 		break;
 	case 1:
-		turnDirection -= ANGULAR_SPEED * 3;
+		turnDirection -= AngularSpeed * 3;
 		VECTOR enemyPos = enemy->GetPosition();
-		VECTOR atkDirection = VGet(sinf(copyRotY) * ATK_RANGE * 0.3f , 0, cosf(copyRotY) * ATK_RANGE * 0.3f);//当たり判定を前にずらす数値
+		VECTOR atkDirection = VGet(sinf(copyRotY) * AtkRange * 0.3f , 0, cosf(copyRotY) * AtkRange * 0.3f);//当たり判定を前にずらす数値
 		
-		if (isHit->_IsHit(VAdd(position, atkDirection), enemyPos, ATK_RANGE * 1.4 ))
+		if (isHit->_IsHit(VAdd(position, atkDirection), enemyPos, AtkRange * 1.4f ))
 		{
 			VECTOR target = VSub(enemyPos, position);
-			targetDirection = atan2(target.x, target.z) + DX_PI_F / 180;
+			targetDirection = atan2f(target.x, target.z) + DX_PI_F / 180;
 
 			velocity += CalcMoveVector(targetDirection, AtkPlayerSpeed);
 
@@ -252,9 +252,9 @@ void Player::Atk()
 		{	
 			if (isAtkDamage)
 			{
-				if (isHit->_IsHit(VAdd(position, atkDirection), enemyPos, ATK_RANGE))
+				if (isHit->_IsHit(VAdd(position, atkDirection), enemyPos, AtkRange))
 				{
-					enemy->Damage(PLAYER_DAMAGE);
+					enemy->Damage(PlayerDamage);
 					PlaySoundMem(atkSound, DX_PLAYTYPE_BACK);
 					turnIndex = 3;
 				}
@@ -267,7 +267,7 @@ void Player::Atk()
 		}
 		break;
 	case 2://元に戻る処理
-		turnDirection += ANGULAR_SPEED;
+		turnDirection += AngularSpeed;
 		if (turnDirection >= copyRotY)
 		{
 			turnDirection = copyRotY;
@@ -336,7 +336,7 @@ void Player::DamageMove()
 	{
 		velocity = VGet(0, 0, 0);
 	}
-	else if (hitCounter <= HIT_STOOP)
+	else if (hitCounter <= HitStoop)
 	{
 		velocity += CalcMoveVector(enemy->GetRotation().y, DamageMoveSpeed);
 	}
@@ -350,7 +350,7 @@ void Player::DamageMove()
 		hitCounter = 0;
 		isDamage = false;///
 	}
-	if (hitCounter > HIT_STOOP)
+	if (hitCounter > HitStoop)
 	{
 		copyPos = VGet(position.x, 50, position.z);
 		effect->SetPos(copyPos, 0);
@@ -369,16 +369,16 @@ void Player::LaserDamage()
 		if (hitCounter == 1)
 		{
 			myHp -= 5;
-			velocity.x = 10 * cosf(THETA * DX_PI_F / 180) * sinf(enemy->GetRotation().y);
-			velocity.y = 10 * sinf(THETA * DX_PI_F / 180);
-			velocity.z = 10 * sin(THETA * DX_PI_F / 180) * cos(enemy->GetRotation().y);
+			velocity.x = 10 * cosf(Theta * DX_PI_F / 180) * sinf(enemy->GetRotation().y);
+			velocity.y = 10 * sinf(Theta * DX_PI_F / 180);
+			velocity.z = 10 * sinf(Theta * DX_PI_F / 180) * cosf(enemy->GetRotation().y);
 			rotx = 0;
-			rotx -= 0.5f * DX_PI_F / (120 * 10 * sin(THETA * DX_PI_F / 180) / GRAVITY);
+			rotx -= 0.5f * DX_PI_F / (120.0f * 10.0f * sinf(Theta * DX_PI_F / 180.0f) / Gravity);
 		}
-		else if (hitCounter <= 120 * 10 * sinf(THETA * DX_PI_F / 180) / GRAVITY)
+		else if (hitCounter <= 120 * 10 * sinf(Theta * DX_PI_F / 180) / Gravity)
 		{
-			velocity.y -= GRAVITY / 60;
-			rotx -= 0.5f * DX_PI_F / (120 * 10 * sinf(THETA * DX_PI_F / 180) / GRAVITY);
+			velocity.y -= Gravity / 60;
+			rotx -= 0.5f * DX_PI_F / (120 * 10 * sinf(Theta * DX_PI_F / 180) / Gravity);
 		}
 		else
 		{
@@ -389,7 +389,7 @@ void Player::LaserDamage()
 			velocity = VGet(0, 0, 0);
 		}
 		
-		if (hitCounter >= 120 * 10 * sinf(THETA * DX_PI_F / 180) / GRAVITY + 20)
+		if (hitCounter >= 120 * 10 * sinf(Theta * DX_PI_F / 180) / Gravity + 20)
 		{
 			velocity = VGet(0, 0, 0);
 			rotx = 0;
@@ -401,15 +401,15 @@ void Player::LaserDamage()
 	}
 	else
 	{
-		myHp -= 0.08;
-		rotx = -THETA * DX_PI_F / 360;
+		myHp -= 0.08f;
+		rotx = -Theta * DX_PI_F / 360;
 		if (position.y <= 10 || velocity.y > 0)
 		{
 			velocity = VGet(0, 0, 0);
 			position.y = 0;
 		}
-		velocity.z += cosf(enemy->GetRotation().y) * PLAYER_SPEED / 5;
-		velocity.x += sinf(enemy->GetRotation().y) * PLAYER_SPEED / 5;
+		velocity.z += cosf(enemy->GetRotation().y) * PlayerSpeed / 5;
+		velocity.x += sinf(enemy->GetRotation().y) * PlayerSpeed / 5;
 	}
 
 	position += velocity;
@@ -423,13 +423,13 @@ void Player::HitLaser()
 
 void Player::RetGauge()
 {
-	float damageCopy = PHP_SIZE + PHP_BAR_SIZE * myHp / PLAYER_HP_MAX;
+	float damageCopy = HpSize + HpBarSize * myHp / playerHpMax;
 	if (retHp >= damageCopy)
-		retHp-=PHP_SPEED;
+		retHp-=RetHpSpeed;
 
-	if(myHp / PLAYER_HP_MAX <= 0.3)
+	if(myHp / playerHpMax <= 0.3)
 		hpState = 3;
-	else if (myHp / PLAYER_HP_MAX <= 0.5)
+	else if (myHp / playerHpMax <= 0.5)
 		hpState = 2;
 }
 
@@ -463,7 +463,7 @@ void Player::LookAt()
 	if (sign > DX_PI_F)
 		sign -= 2 * DX_PI_F;
 	if (sign != 0)
-		rotation.y += LOOK_SPEED * sign / DX_PI;
+		rotation.y += LOOK_SPEED * sign / DX_PI_F;
 	else
 		rotation.y = goalRotY;
 }

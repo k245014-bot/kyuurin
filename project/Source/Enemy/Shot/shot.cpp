@@ -37,7 +37,7 @@ bool Shot::CreateShot(VECTOR _pos, VECTOR _vel, float _dir)
 
 	active = true;
 
-	position = _pos;//
+	position = _pos;
 	position.y = POSITION_Y;
 	velocity = _vel;
 	direction = _dir;

@@ -11,6 +11,7 @@
 Enemy::Enemy(SceneBase * _scene) : CharaBase(_scene)
 {
 	floor = GetScene()->FindGameObject<Floor>();
+	effect = SceneManager::CommonScene()->FindGameObject<EffectManager>();
 	isHit = new IsHit();
 	SetModel("blue");
 
@@ -37,14 +38,12 @@ Enemy::Enemy(SceneBase * _scene) : CharaBase(_scene)
 	destinationCheck = true;
 	coolTimeCounter = 0;
 
-	myHp = HP_MAX;
+	myHp = (float)HpMax;
 	isDead = false;
 
 	damageCounter = 0;
 
-	effect = SceneManager::CommonScene()->FindGameObject<EffectManager>();
-
-	retHp = HP_SIZE + HP_BAR_SIZE;////////////////////
+	retHp = (float)(HpSize + HpBarSize);
 
 	soundCounter = 0;
 	chageCounter = 0;
@@ -102,7 +101,7 @@ void Enemy::EnemyMove()
 
 	rotation.y = targetDirection + DX_PI_F / 180;
 
-	velocity += CalcMoveVector(rotation.y, ENEMY_SPEED);
+	velocity += CalcMoveVector(rotation.y, EnemySpeed);
 
 	if (isHit->_IsHit(position, destination, AttackRange))
 	{
@@ -123,14 +122,14 @@ void Enemy::EnemyShot()
 
 		rotation.y = targetDirection + DX_PI_F / 180;
 		
-		if (myHp / HP_MAX >= LaserAttack)
+		if (myHp / HpMax >= LaserAttack)
 		{
-			coolTime = COOLTIME;
+			coolTime = CoolTime;
 			shot = GetScene()->FindGameObject<ShotManager>();
-			shot->CreateShot(position, VGet(SHOT_SPEED, 0, SHOT_SPEED), rotation.y);
+			shot->CreateShot(position, VGet(ShotSpeed, 0, ShotSpeed), rotation.y);
 			PlaySoundMem(atkSound, DX_PLAYTYPE_BACK);
 		}
-		else if(myHp / HP_MAX >= LastAttack)
+		else if(myHp / HpMax >= LastAttack)
 		{
 			coolTime = LaserCoolTime;
 			VECTOR effPos = VGet(position.x, 40, position.z);//
@@ -147,10 +146,10 @@ void Enemy::EnemyShot()
 	}
 	else
 	{
-		if (myHp / HP_MAX >= LaserAttack)
+		if (myHp / HpMax >= LaserAttack)
 		{
 		}
-		else if (myHp / HP_MAX >= LastAttack && effect->IsLaser()  )
+		else if (myHp / HpMax >= LastAttack && effect->IsLaser()  )
 		{
 			if (coolTimeCounter <= ChargeMaxTime)
 			{
@@ -176,15 +175,15 @@ void Enemy::EnemyShot()
 				}
 			}
 		}
-		else if (myHp / HP_MAX < 0.1 && effect->IsLaser())
+		else if (myHp / HpMax < 0.1 && effect->IsLaser())
 		{
 			if (coolTimeCounter % 2 == 0)
 			{
 				shot = GetScene()->FindGameObject<ShotManager>();
-				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, 0, SHOT_SPEED / 100 * coolTimeCounter), rotation.y + DX_PI_F / 70 * (coolTimeCounter - 45));
-				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, 0, SHOT_SPEED / 100 * coolTimeCounter), rotation.y - DX_PI_F / 70 * (coolTimeCounter - 45));
-				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, (float)abs(cos(DX_PI_F / 40 * coolTimeCounter)) * SHOT_SPEED / 2 * coolTimeCounter , SHOT_SPEED / 100 * coolTimeCounter), rotation.y + DX_PI_F / 140 * (coolTimeCounter + 45));
-				shot->CreateShot(position, VGet(SHOT_SPEED / 100 * coolTimeCounter, (float)abs(cos(DX_PI_F / 40 * coolTimeCounter)) * SHOT_SPEED / 2 * coolTimeCounter , SHOT_SPEED / 100 * coolTimeCounter), rotation.y - DX_PI_F / 140 * (coolTimeCounter + 45));
+				shot->CreateShot(position, VGet(ShotSpeed / 100 * coolTimeCounter, 0, ShotSpeed / 100 * coolTimeCounter), rotation.y + DX_PI_F / 70 * (coolTimeCounter - 45));
+				shot->CreateShot(position, VGet(ShotSpeed / 100 * coolTimeCounter, 0, ShotSpeed / 100 * coolTimeCounter), rotation.y - DX_PI_F / 70 * (coolTimeCounter - 45));
+				shot->CreateShot(position, VGet(ShotSpeed / 100 * coolTimeCounter, (float)abs(cos(DX_PI_F / 40 * coolTimeCounter)) * ShotSpeed / 2 * coolTimeCounter , ShotSpeed / 100 * coolTimeCounter), rotation.y + DX_PI_F / 140 * (coolTimeCounter + 45));
+				shot->CreateShot(position, VGet(ShotSpeed / 100 * coolTimeCounter, (float)abs(cos(DX_PI_F / 40 * coolTimeCounter)) * ShotSpeed / 2 * coolTimeCounter , ShotSpeed / 100 * coolTimeCounter), rotation.y - DX_PI_F / 140 * (coolTimeCounter + 45));
 			}
 			if (coolTimeCounter <= 50)
 			{
@@ -259,7 +258,7 @@ void Enemy::DamageMove()
 		damageCounter = 0;
 	}
 
-	if (myHp / HP_MAX <= 0.1)
+	if (myHp / HpMax <= 0.1)
 	{
 		if (phaseCounter == 1)
 		{
@@ -269,7 +268,7 @@ void Enemy::DamageMove()
 			hpState = 3;
 		}
 	}
-	else if (myHp / HP_MAX <= 0.5)
+	else if (myHp / HpMax <= 0.5)
 	{
 		if (phaseCounter == 0)
 		{
@@ -289,9 +288,9 @@ void Enemy::DamageMove()
 
 void Enemy::RetGauge()
 {
-	float damageCopy = HP_SIZE + HP_BAR_SIZE * myHp / HP_MAX;
+	float damageCopy = HpSize + HpBarSize * myHp / HpMax;
 	if (retHp >= damageCopy)
-		retHp -= HP_SPEED;
+		retHp -= HpSpeed;
 }
 
 void Enemy::StartPlay()
@@ -304,9 +303,9 @@ void Enemy::Draw()
 	if (!isDead)
 		CharaBase::Draw();
 
-	DrawRectGraph((int)hpBar.pos.x, (int)hpBar.pos.y, 0, 0, HP_BAR_X, HP_BAR_Y, hpBar.image, true);//フレーム
-	DrawRectGraph((int)hpBar.pos.x, (int)hpBar.pos.y, 0, HP_BAR_Y * 3, (int)retHp, HP_BAR_Y, hpBar.image, true);//赤ゲージ
-	DrawRectGraph((int)hpBar.pos.x, (int)hpBar.pos.y, 0, HP_BAR_Y * hpState, HP_SIZE + HP_BAR_SIZE * (int)myHp / HP_MAX, HP_BAR_Y, hpBar.image, true);//hp
+	DrawRectGraph((int)hpBar.pos.x, (int)hpBar.pos.y, 0, 0, HpBarX, HpBarY, hpBar.image, true);//フレーム
+	DrawRectGraph((int)hpBar.pos.x, (int)hpBar.pos.y, 0, HpBarY * 3, (int)retHp, HpBarY, hpBar.image, true);//赤ゲージ
+	DrawRectGraph((int)hpBar.pos.x, (int)hpBar.pos.y, 0, HpBarY * hpState, HpSize + HpBarSize * (int)myHp / HpMax, HpBarY, hpBar.image, true);//hp
 }
 
 void Enemy::PlayerData(Player* _player)

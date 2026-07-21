@@ -2,22 +2,7 @@
 #include "../objData.h"
 #include "../ObjectBase/CharaBase.h"
 
-static const float ENEMY_SPEED = 0.8f;//0.2
-static const int XZ = 2;
-static const float SHOT_SPEED = 0.1f;
-static const float RUN_DEGREE = 30;
-static const int COOLTIME = 250;//エネミーの移動までの時間
-static const int HP_MAX = 150;//150
-
-namespace
-{
-	static const int HP_BAR_X = 1024;
-	static const int HP_BAR_Y = 128;
-	static const int HP_BAR_SIZE = 834;
-	static const int HP_SIZE = 175;
-
-	static const float HP_SPEED = 5.0f;
-}
+const int XZ = 2;
 
 class Character;
 class Player;
@@ -50,6 +35,13 @@ private:
 	IsHit* isHit;//当たり判定
 	EffectManager* effect;
 
+	const float EnemySpeed = 0.8f;
+	const float ShotSpeed = 0.1f;
+	const float RunDegree = 30;
+	//エネミーの移動までの時間
+	const int CoolTime = 250;
+	const int HpMax = 150;
+
 	const VECTOR3 SpawnPos = VECTOR3(100.0f, 0, 200.0f);
 	const float AttackRange = 100.0f;
 	const float LaserAttack = 0.5f;
@@ -62,6 +54,13 @@ private:
 	const int PhaseEffTime = 100;
 	
 	const int LaserCoolTime = 350;
+
+	const int HpBarX = 1024;
+	const int HpBarY = 128;
+	const int HpBarSize = 834;
+	const int HpSize = 175;
+	const float HpSpeed = 5.0f;
+
 	enum class STATE
 	{
 		ST_STOP,
@@ -76,8 +75,8 @@ private:
 	void EnemyShot();
 	void DeadEnemy();
 	void DamageMove();
-	void RetGauge();//赤ゲージの削れる処理
-	
+	//赤ゲージの削れる処理
+	void RetGauge();
 
 	VECTOR velocity;
 	float rotx, rotz;
@@ -97,7 +96,7 @@ private:
 
 	int coolTimeCounter;
 
-	float myHp;//敵のhp
+	float myHp;
 	bool isDead;
 
 	Data2D hpBar;//hpのフレーム

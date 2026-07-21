@@ -9,7 +9,7 @@ Camera::Camera(SceneBase* _scene) : MovableObject(_scene)
 
 	lookPosition = VZero;
 	rotation.x = 25.0f * DegToRad;
-	rotation.y = 225 * DegToRad;
+	rotation.y = 0/*225 * DegToRad*/;
 
 	deadPlayer = false;
 
@@ -25,7 +25,7 @@ void Camera::Update()
 {
 	if (!deadPlayer)
 	{
-		rotation.y += 1.5f * input->GetKeyPush().sickRX / 60.0f;
+		rotation.y += 1.5f * input->GetKeyPush().sickRX / 20.0f;
 	}
 	else
 		DeadMove();

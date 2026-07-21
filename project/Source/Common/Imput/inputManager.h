@@ -6,7 +6,7 @@ static const int KEYCOOLTIME = 20;
 static const int STICK_MAX = 32767;
 static const int MOUSE_OFFSET_X = 1920 / 2;		//画面の中央座標。マウスの移動量計測に使用
 static const int MOUSE_OFFSET_Y = 1080 / 2;
-static const int RESTAINT = 10;//抑制
+static const int RESTAINT = 40;//抑制
 
 struct KeyPush
 {

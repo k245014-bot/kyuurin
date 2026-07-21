@@ -219,7 +219,6 @@ void Player::JumpMove()
 	}
 	
 	position += velocity;
-	//position = floor->SetPlayerPos(position);
 }
 
 void Player::Atk()
@@ -277,7 +276,7 @@ void Player::Atk()
 		break;
 	case 3://“G‚Éƒ_ƒ[ƒW‚ª’Ê‚Á‚½Žž
 		if(turnCounter == 0)
-			velocityCopy = velocity;
+			velocityCopy = velocity / 2;
 
 		velocity = VZero;
 		turnCounter++;
@@ -457,7 +456,7 @@ void Player::LookAt()
 	//Œü‚­•ûŒü‚ÌŒvŽZ
 	float sign = goalRotY - rotation.y;
 	sign -= floorf(sign / DX_PI_F / 2) * DX_PI_F * 2;
-	const float LOOK_SPEED = 0.2f;
+	const float LOOK_SPEED = 0.5f;
 
 	//ŽÀÛ‚ÉŒü‚­ˆ—
 	if (sign > DX_PI_F)

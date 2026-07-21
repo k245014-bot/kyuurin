@@ -118,7 +118,7 @@ void PlayScene::Draw()
 	} 
 	else if (state== STATE::LOSER) 
 	{
-		DrawRectGraph(50, 250, 0, 0, 1034, 136, lose, TRUE, FALSE);
+		DrawGraph(520, 250, lose, TRUE);
 	} else if (state == STATE::WINNER)
 	{
 		DrawRectGraph(500, 350, 0, 0, 823, 123, win, TRUE, FALSE);
